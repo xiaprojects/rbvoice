@@ -1,0 +1,210 @@
+{
+    "rules": [
+        {
+            "name": "OILAVG",
+            "algorithm": "average",
+            "probeNames": [
+                "oiltemperature"
+            ],
+            "colors": [
+                {
+                    "color": "green",
+                    "min": 40,
+                    "max": 74
+                },
+                {
+                    "color": "yellow",
+                    "min": 75,
+                    "max": 119
+                },
+                {
+                    "color": "red",
+                    "min": 120,
+                    "max": 9999
+                }
+            ]
+        },
+        {
+            "name": "EGTAVG",
+            "algorithm": "average",
+            "probeNames": [
+                "egt1",
+                "egt2",
+                "egt3"
+            ],
+            "colors": [
+                {
+                    "color": "green",
+                    "min": 500,
+                    "max": 699
+                },
+                {
+                    "color": "yellow",
+                    "min": 700,
+                    "max": 749
+                },
+                {
+                    "color": "red",
+                    "min": 749,
+                    "max": 9999
+                }
+            ]
+        },
+        {
+            "name": "EGTMAX",
+            "algorithm": "max",
+            "probeNames": [
+                "egt1",
+                "egt2",
+                "egt3"
+            ],
+            "colors": [
+                {
+                    "color": "green",
+                    "min": 500,
+                    "max": 699
+                },
+                {
+                    "color": "yellow",
+                    "min": 700,
+                    "max": 749
+                },
+                {
+                    "color": "red",
+                    "min": 749,
+                    "max": 9999
+                }
+            ]
+        },
+        {
+            "name": "CHTAVG",
+            "algorithm": "average",
+            "probeNames": [
+                "cht1",
+                "cht2",
+                "cht4"
+            ],
+            "colors": [
+                {
+                    "color": "green",
+                    "min": 120,
+                    "max": 179
+                },
+                {
+                    "color": "yellow",
+                    "min": 180,
+                    "max": 219
+                },
+                {
+                    "color": "red",
+                    "min": 220,
+                    "max": 9999
+                }
+            ]
+        },
+        {
+            "name": "CHTMAX",
+            "algorithm": "max",
+            "probeNames": [
+                "cht1",
+                "cht2",
+                "cht4"
+            ],
+            "colors": [
+                {
+                    "color": "green",
+                    "min": 120,
+                    "max": 179
+                },
+                {
+                    "color": "yellow",
+                    "min": 180,
+                    "max": 219
+                },
+                {
+                    "color": "red",
+                    "min": 220,
+                    "max": 9999
+                }
+            ]
+        },
+        {
+            "name": "CHTMIN",
+            "algorithm": "min",
+            "probeNames": [
+                "cht1",
+                "cht2",
+                "cht4"
+            ],
+            "colors": [
+                {
+                    "color": "green",
+                    "min": 120,
+                    "max": 179
+                },
+                {
+                    "color": "yellow",
+                    "min": 180,
+                    "max": 219
+                },
+                {
+                    "color": "red",
+                    "min": 220,
+                    "max": 9999
+                }
+            ]
+        },
+        {
+            "name": "CHTDIFF",
+            "algorithm": "averageDiff",
+            "probeNames": [
+                "cht1",
+                "cht2",
+                "cht4"
+            ],
+            "colors": [
+                {
+                    "color": "green",
+                    "min": 0,
+                    "max": 5
+                },
+                {
+                    "color": "yellow",
+                    "min": 6,
+                    "max": 15
+                },
+                {
+                    "color": "red",
+                    "min": 16,
+                    "max": 9999
+                }
+            ]
+        },
+        {
+            "name": "EGTDIFF",
+            "algorithm": "averageDiff",
+            "probeNames": [
+                "egt1",
+                "egt2",
+                "egt3"
+            ],
+            "colors": [
+                {
+                    "color": "green",
+                    "min": 0,
+                    "max": 10
+                },
+                {
+                    "color": "yellow",
+                    "min": 10,
+                    "max": 20
+                },
+                {
+                    "color": "red",
+                    "min": 20,
+                    "max": 9999
+                }
+            ]
+        }
+    ]
+}

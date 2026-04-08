@@ -1,0 +1,652 @@
+{
+  "language": "it",
+  "wake_words": [
+    "compiute",
+    "computer",
+    "primario",
+    "secondario",
+    "backup",
+    "strumento",
+    "rotondo",
+    "ehi computer",
+    "display",
+    "avionica",
+    "aeroplano",
+    "aeromobile"
+  ],
+  "base_url": "http://localhost",
+  "answers": {
+    "egt1": "primo scarico",
+    "egt2": "secondo scarico",
+    "egt3": "terzo scarico",
+    "egt4": "quarto scarico",
+    "cht1": "primo cilindro",
+    "cht2": "secondo cilindro",
+    "cht3": "terzo cilindro",
+    "cht4": "quarto cilindro",
+    "OFF": "spento",
+    "GREEN": "verde",
+    "YELLOW": "giallo",
+    "RED": "rosso",
+    "stop": "ferma",
+    "cancel": "annulla",
+    "delete": "cancella",
+    "and": "e",
+    "seconds": "secondi",
+    "minutes": "minuti",
+    "started": "avviato",
+    "stopped": "fermo",
+    "didnotget": "chiedimelo diversamente",
+    "didnotfindairfield": "non ho trovato quello che mi hai chiesto, riprova con una chiave di ricerca diversa",
+    "trafficNone": "Nessun traffico riportato",
+    "trafficAbove": "sopra di te",
+    "trafficBelow": "sotto di te",
+    "trafficClock": "alle tue ore"
+  },
+  "numbers": {
+    "main_words": [
+      "punto",
+      "virgola",
+      "decimali",
+      "decimale",
+      "e"
+    ],
+    "max_digits_before": 3,
+    "max_digits_after": 3
+  },
+  "skip_words": [
+    "il",
+    "lo",
+    "la",
+    "i",
+    "gli",
+    "le",
+    "in",
+    "con",
+    "su",
+    "tra",
+    "fra",
+    "di",
+    "del",
+    "mio",
+    "è",
+    "dai",
+    "e",
+    "siamo",
+    "siete",
+    "che",
+    "nostro",
+    "a",
+    "per",
+    "mi",
+    "su",
+    "cosa",
+    "dove"
+  ],
+  "actions": {
+    "GET": [
+      "sono",
+      "cos'è",
+      "qual'e",
+      "cosa",
+      "quale",
+      "trova",
+      "quali",
+      "chiedo",
+      "andamento",
+      "come",
+      "quanto",
+      "stato",
+      "quanti",
+      "dove",
+      "dove",
+      "dove sono",
+      "dimmi",
+      "descrivi"
+    ],
+    "SET": [
+      "via",
+      "imposta",
+      "inserisci",
+      "avvia",
+      "metti",
+      "immetti",
+      "configura",
+      "portami a",
+      "vai a"
+    ],
+    "DEL": [
+      "cancella",
+      "stop",
+      "rimuovi",
+      "ferma",
+      "annulla"
+    ]
+  },
+  "defaults": {
+    "action": "GET"
+  },
+  "components": {
+    "display": {
+      "keywords": {
+        "visualizza altimetro": "altimeter",
+        "visualizza sbandometro": "turnslip",
+        "visualizza orizzonte": "attitude",
+        "visualizza assetto": "attitude",
+        "visualizza metro": "gmeter",
+        "visualizza motore": "ems",
+        "visualizza mappa": "map",
+        "visualizza acrobatico": "resources",
+        "visualizza giro direzionale": "heading",
+        "visualizza pallina": "turnslip",
+        "visualizza bussola": "heading",
+        "visualizza radar": "radar",
+        "visualizza variometro": "variometer",
+        "mostrami altimetro": "altimeter",
+        "mostrami assetto": "attitude",
+        "mostrami radar": "altimeter",
+        "mostrami mappa": "map",
+        "mostrami motore": "ems",
+        "mostrami acrobatico": "altimeter",
+        "mostrami sbandometro": "turnslip",
+        "mostrami orizzonte": "attitude",
+        "mostrami giro direzionale": "heading",
+        "mostrami pallina": "turnslip",
+        "mostrami bussola": "heading",
+        "mostrami variometro": "variometer"
+      },
+      "endpoints": {
+        "display": {
+          "path": "/remote/voice",
+          "method": "",
+          "json_path": "",
+          "reply_template": "il {last_wwword} visualizza {last_parameter}"
+        }
+      }
+    },
+    "traffic": {
+      "keywords": {
+        "traffici": "traffic",
+        "traffici vicini": "traffic",
+        "traffici torno": "traffic",
+        "traffico": "traffic"
+      },
+      "endpoints": {
+        "traffic": {
+          "path": "/getTraffic",
+          "method": "",
+          "json_path": "",
+          "reply_template": "Sono stati riportati {TrafficCount} traffici, il più vicino è {TrafficLocation} e dista {TrafficDistance} chilometri"
+        }
+      }
+    },
+    "ems": {
+      "keywords": {
+        "batteria": "batteryvoltage",
+        "voltaggio": "batteryvoltage",
+        "alternatore": "alternatorout",
+        "giri": "enginerpm",
+        "giri motore": "enginerpm",
+        "giri al minuto": "enginerpm",
+        "carburante": "fuelremaining",
+        "pressione olio": "oilpressure",
+        "ampere": "amps",
+        "corrente": "amps",
+        "assorbimento": "amps",
+        "cht1": "cht1",
+        "cilindro uno": "cht1",
+        "primo cilindro": "cht1",
+        "cht2": "cht2",
+        "secondo cilindro": "cht2",
+        "cilindro due": "cht2",
+        "cht3": "cht3",
+        "terzo cilindro": "cht3",
+        "cilindro tre": "cht3",
+        "cht4": "cht4",
+        "cilindro quattro": "cht4",
+        "quarto cilindro": "cht4",
+        "egt1": "egt1",
+        "scarico uno": "egt1",
+        "scarico due": "egt2",
+        "scarico tre": "egt3",
+        "scarico quattro": "egt4",
+        "primo scarico": "egt1",
+        "secondo scarico": "egt2",
+        "terzo scarico": "egt3",
+        "quarto scarico": "egt4",
+        "motore": "fullengine",
+        "scarichi": "egt",
+        "cilindri": "cht",
+        "temperature scarichi": "egt",
+        "temperature cilindri": "cht",
+        "egt2": "egt2",
+        "egt3": "egt3",
+        "egt4": "egt4",
+        "pressione carburante": "fuelpressure",
+        "collettore": "manifoldpressure",
+        "pressione collettore": "manifoldpressure",
+        "olio": "oiltemperature",
+        "esterna": "outsidetemperature",
+        "aria": "outsidetemperature"
+      },
+      "endpoints": {
+        "fullengine": {
+          "path": "/getEMS",
+          "method": "helper_EMS_EngineStatus",
+          "json_path": "",
+          "reply_template": "Olio in arco {OILAVG}. Giri motore {enginerpm}. I cilindri sono in arco {CHTAVG}. Gli scarichi sono in arco {EGTAVG}.",
+          "reply_template_old": "I giri motore sono: {enginerpm}, la temperatura dell'olio è {oiltemperature} gradi. Le temperature dei cilindri sono primo {cht1} gradi secondo {cht2} gradi terzo {cht3} gradi quarto {cht4} gradi, Le temperature degli scarichi sono primo {egt1} gradi secondo {egt2} gradi terzo {egt3} gradi quarto {egt4} gradi. Ad ora non sono riportate anomalie."
+        },
+        "egt": {
+          "path": "/getEMS",
+          "method": "helper_EMS_EngineStatus",
+          "json_path": "",
+          "reply_template": "La media degli scarichi sono in arco {EGTAVG} e la differenza è {EGTDIFF}, il più caldo è {CHTMAXPROBELABEL}"
+        },
+        "cht": {
+          "path": "/getEMS",
+          "method": "helper_EMS_EngineStatus",
+          "json_path": "",
+          "reply_template": "La media dei cilindri è in arco {CHTAVG} e la differenza è {CHTDIFF}, il più caldo è {CHTMAXPROBELABEL}, il più freddo è in arco {CHTMIN} ed è {CHTMINPROBELABEL}"
+        },
+        "batteryvoltage": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "batteryvoltage",
+          "reply_template": "La tensione della batteria è {batteryvoltage} volt"
+        },
+        "alternatorout": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "alternatorout",
+          "reply_template": "L'alternatore è a {alternatorout} ampere"
+        },
+        "enginerpm": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "enginerpm",
+          "reply_template": "RPM motore {enginerpm}"
+        },
+        "fuelremaining": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "fuelremaining",
+          "reply_template": "Carburante rimanente {fuelremaining} litri"
+        },
+        "oilpressure": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "oilpressure",
+          "reply_template": "Pressione olio {oilpressure} PSI"
+        },
+        "amps": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "amps",
+          "reply_template": "{amps} ampere"
+        },
+        "cht1": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "cht1",
+          "reply_template": "Primo cilindro {cht1} gradi"
+        },
+        "cht2": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "cht2",
+          "reply_template": "Secondo cilindro {cht2} gradi"
+        },
+        "cht3": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "cht3",
+          "reply_template": "Terzo cilindro {cht3} gradi"
+        },
+        "cht4": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "cht4",
+          "reply_template": "Quarto cilindro {cht4} gradi"
+        },
+        "egt1": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "egt1",
+          "reply_template": "Primo scarico {egt1} gradi"
+        },
+        "egt2": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "egt2",
+          "reply_template": "Secondo scarico {egt2} gradi"
+        },
+        "egt3": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "egt3",
+          "reply_template": "Terzo scarico {egt3} gradi"
+        },
+        "egt4": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "egt4",
+          "reply_template": "Quarto scarico {egt4} gradi"
+        },
+        "fuel": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "fuel",
+          "reply_template": "Rimanenti {fuel} litri"
+        },
+        "fuel1": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "fuel1",
+          "reply_template": "Rimanenti {fuel1} litri"
+        },
+        "fuel2": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "fuel2",
+          "reply_template": "Rimanenti {fuel2} litri"
+        },
+        "fuelpressure": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "fuelpressure",
+          "reply_template": "Pressione carburante {fuelpressure} psi"
+        },
+        "manifoldpressure": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "manifoldpressure",
+          "reply_template": "Pressione collettore {manifoldpressure} psi"
+        },
+        "oiltemperature": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "oiltemperature",
+          "reply_template": "Temperatura olio {oiltemperature} gradi"
+        },
+        "outsidetemperature": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "outsidetemperature",
+          "reply_template": "Temperatura aria esterna {outsidetemperature} gradi"
+        }
+      }
+    },
+    "situation": {
+      "keywords": {
+        "ore": "GPSTime",
+        "orario": "GPSTime",
+        "magnetico": "AHRSMagHeading",
+        "prua": "AHRSMagHeading",
+        "gps": "GPSAltitudeMSL",
+        "altitudine": "GPSAltitudeMSL",
+        "satelliti": "GPSSatellites",
+        "latitudine": "GPSLatitude",
+        "longitudine": "GPSLongitude",
+        "prua gps": "GPSTrueCourse",
+        "track": "GPSTrueCourse",
+        "rotta vera": "GPSTrueCourse",
+        "velocità al suolo": "GPSGroundSpeed",
+        "velocita al suolo": "GPSGroundSpeed",
+        "altitudine pressione": "BaroPressureAltitude",
+        "velocità verticale": "GPSVerticalSpeed",
+        "velocita verticale": "GPSVerticalSpeed",
+        "variometro": "BaroVerticalSpeed",
+        "ora": "GPSTime",
+        "orologio": "GPSTime",
+        "pallina": "AHRSSlipSkid",
+        "sbandometro": "AHRSSlipSkid",
+        "sfera": "AHRSSlipSkid",
+        "deriva": "AHRSSlipSkid",
+        "scivolata": "AHRSSlipSkid",
+        "centrata": "AHRSSlipSkid",
+        "virata": "AHRSTurnRate",
+        "turn rate": "AHRSTurnRate",
+        "carico": "AHRSGLoad",
+        "g metro max": "AHRSGLoadMax",
+        "g metro negativo": "AHRSGLoadMin",
+        "g metro min": "AHRSGLoadMin",
+        "altimetro": "BaroPressureAltitude",
+        "barometro": "BaroPressureAltitude",
+        "assetto": "attitude",
+        "beccheggio": "AHRSPitch",
+        "rollio": "AHRSRoll",
+        "prua magnetometro": "AHRSMagHeading"
+      },
+      "endpoints": {
+        "attitude": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "",
+          "reply_template": "Assetto aeromobile {AHRSPitch:.0f} beccheggio e {AHRSRoll:.0f} rollio gradi"
+        },
+        "AHRSMagHeading": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "AHRSMagHeading",
+          "reply_template": "Prua magnetica {AHRSMagHeading:.0f} gradi"
+        },
+        "GPSAltitudeMSL": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "GPSAltitudeMSL",
+          "reply_template": "Altitudine GPS {GPSAltitudeMSL:.0f} piedi"
+        },
+        "GPSSatellites": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "GPSSatellites",
+          "reply_template": "Numero satelliti disponibili {GPSSatellites}"
+        },
+        "GPSLatitude": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "GPSLatitude",
+          "reply_template": "Latitudine {GPSLatitude:.2f}"
+        },
+        "GPSLongitude": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "GPSLongitude",
+          "reply_template": "Longitudine {GPSLongitude:.2f}"
+        },
+        "GPSFixQuality": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "GPSFixQuality",
+          "reply_template": "Qualità fix {GPSFixQuality}"
+        },
+        "GPSVerticalSpeed": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "GPSVerticalSpeed",
+          "reply_template": "Velocità verticale GPS {GPSVerticalSpeed:.0f} piedi al minuto"
+        },
+        "GPSTrueCourse": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "GPSTrueCourse",
+          "reply_template": "Rotta vera GPS {GPSTrueCourse:.0f} gradi"
+        },
+        "GPSTurnRate": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "GPSTurnRate",
+          "reply_template": "Tasso di virata {GPSTurnRate:.0f} gradi al secondo"
+        },
+        "GPSGroundSpeed": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "GPSGroundSpeed",
+          "reply_template": "Velocità GPS {GPSGroundSpeed:.0f} nodi"
+        },
+        "GPSLastGroundTrackTime": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "GPSLastGroundTrackTime",
+          "reply_template": "{GPSLastGroundTrackTime}"
+        },
+        "GPSTime": {
+          "path": "/getSituation",
+          "method": "helper_GPSTime",
+          "json_path": "GPSTime",
+          "reply_template": "Ora GPS {GPSTime}"
+        },
+        "BaroTemperature": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "BaroTemperature",
+          "reply_template": "{BaroTemperature:.1f}"
+        },
+        "BaroPressureAltitude": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "BaroPressureAltitude",
+          "reply_template": "{BaroPressureAltitude:.0f}"
+        },
+        "BaroHumidity": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "BaroHumidity",
+          "reply_template": "{BaroHumidity:.0f}"
+        },
+        "BaroPpm": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "BaroPpm",
+          "reply_template": "{BaroPpm:.0f}"
+        },
+        "BaroGasResistance": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "BaroGasResistance",
+          "reply_template": "{BaroGasResistance:.0f}"
+        },
+        "BaroVerticalSpeed": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "BaroVerticalSpeed",
+          "reply_template": "Variometro {BaroVerticalSpeed:.0f} piedi al minuto"
+        },
+        "AHRSPitch": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "AHRSPitch",
+          "reply_template": "Beccheggio {AHRSPitch:.0f} gradi"
+        },
+        "AHRSRoll": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "AHRSRoll",
+          "reply_template": "Rollio {AHRSRoll:.0f} gradi"
+        },
+        "AHRSGyroHeading": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "AHRSGyroHeading",
+          "reply_template": "Prua giroscopica {AHRSGyroHeading:.0f} gradi"
+        },
+        "AHRSSlipSkid": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "AHRSSlipSkid",
+          "reply_template": "Spostato di {AHRSSlipSkid} gradi"
+        },
+        "AHRSTurnRate": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "AHRSTurnRate",
+          "reply_template": "Tasso di virata {AHRSTurnRate:.0f} gradi al secondo"
+        },
+        "AHRSGLoad": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "AHRSGLoad",
+          "reply_template": "Forza G {AHRSGLoad:.1f} G"
+        },
+        "AHRSGLoadMin": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "AHRSGLoadMin",
+          "reply_template": "Carico negativo {AHRSGLoadMin:.1f} G"
+        },
+        "AHRSGLoadMax": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "AHRSGLoadMax",
+          "reply_template": "Carico massimo {AHRSGLoadMax:.1f} G"
+        }
+      }
+    },
+    "autopilot": {
+      "keywords": {
+        "destinazione": "destination",
+        "arrivo": "destination",
+        "finale": "destination",
+        "distanza": "destination",
+        "manca": "destination",
+        "tempo": "destination"
+      },
+      "endpoints": {
+        "destination": {
+          "path": "/autopilot",
+          "method": "helper_AutopilotDestination",
+          "json_path": "-1",
+          "reply_template": "Per arrivare a {Cmt}, impiegherai ancora {MinutesToDestination} minuti e {NMToDestination} miglia nautiche"
+        }
+      }
+    },
+    "radio": {
+      "keywords": {
+        "frequenza radio": "radio",
+        "radio frequenza": "radio"
+      },
+      "endpoints": {
+        "radio": {
+          "path": "/radio",
+          "method": "",
+          "json_path": "",
+          "reply_template": "Frequenza {FrequencyStandby} radio impostata"
+        }
+      }
+    },
+    "airfields": {
+      "keywords": {
+        "trova": "find",
+        "cercami": "find",
+        "cerca per": "find",
+        "aviosuperficie": "find",
+        "aeroporto": "find",
+        "pista": "find",
+        "campo": "find",
+        "radio": "find"
+      },
+      "endpoints": {
+        "find": {
+          "path": "/settings/db.airfields.json",
+          "method": "",
+          "json_path": "",
+          "reply_template": "Trovato {name}, altitudine {Ele} piedi, frequenza radio: {freq}, dista {POIDISTANCE:.1f} direzione {POIBEARING:.0f} gradi"
+        }
+      }
+    },
+    "timers": {
+      "keywords": {
+        "timer": "timer"
+      },
+      "endpoints": {
+        "timer": {
+          "path": "/timers",
+          "method": "",
+          "json_path": "",
+          "reply_template": "Il timer {timer name} è {timer status} e conta {timer count}"
+        }
+      }
+    }
+  }
+}

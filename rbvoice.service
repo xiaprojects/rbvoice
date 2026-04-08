@@ -1,0 +1,18 @@
+[Unit]
+Description=RB Voice Recognition
+After=user-runtime-dir@1000.service
+BindsTo=user-runtime-dir@1000.service
+PartOf=user-runtime-dir@1000.service
+
+[Service]
+WorkingDirectory=/opt/rbvoice
+ExecStart=/bin/bash -lc bin/rbvoice.sh
+User=pi
+KillMode=process
+Restart=always
+RestartSec=60
+StandardOutput=syslog
+StandardError=syslog
+
+[Install]
+WantedBy=multi-user.target
