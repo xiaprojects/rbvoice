@@ -3,7 +3,10 @@
 source "$(dirname $0)/activate"
 # Example to search USB Audio
 DEVINDEX=$(aplay -l|grep USB|cut -f1 -d:|cut -f2 -d " ")
-DEVOUT="plughw:${DEVINDEX},0"
+# HW USB Dongle
+#DEVOUT="plughw:${DEVINDEX},0"
+# If you want to share the Audio with Chromium or Waydroid you shall set the .asoundrc
+DEVOUT="default"
 DEV="plughw:${DEVINDEX},0"
 
 # Example using Bluetooth MAC
@@ -34,6 +37,8 @@ PIPERONNX=$(dirname $0)/../piper-models/it_IT-paola-medium.onnx
 PIPERCONF=$(dirname $0)/../piper-models/it_IT-paola-medium.onnx.json
 RECPATH=/opt/stratux/www/playback/
 CASESPATH=/boot/firmware/rb/rbvoice-cases.it.json
+# External pipe-play.sh and pipe-rec.sh
+PATH=$(dirname $0):$PATH
 
 exec python $(dirname $0)/rbvoice.py --rec $RECPATH --server $SERVER --out "$DEVOUT" --dev "$DEV" --model $VOSKMODEL --piper-model $PIPERONNX --piper-json $PIPERCONF --cases $CASESPATH
 

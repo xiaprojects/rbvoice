@@ -20,6 +20,7 @@ all:
 
 install:
 	# binaries
+	mkdir -p $(VENV_DIR)/bin
 	cp -f *.sh $(VENV_DIR)/bin/
 	cp -f *.py $(VENV_DIR)/bin/
 	cp -f *.json /boot/firmware/rb
@@ -44,9 +45,18 @@ venv:
 	chown pi $(VENV_DIR)
 	python3 -m venv $(VENV_DIR)
 	$(PYTHON) -m pip install --upgrade pip
-
-install-vosk:
+	$(PIP) install text2num
 	$(PIP) install vosk
-
-install-piper:
 	$(PIP) install piper-tts
+
+install-dependencies-standalone:
+	apt -y install sox
+
+install-dependencies-bluetooth:
+	apt -y install bluetoothalsa
+
+install-dependencies-android:
+	apt -y install pipewire
+
+install-asoundrc:
+	cp asoundrc $HOME/.asoundrc
