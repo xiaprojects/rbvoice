@@ -23,7 +23,9 @@ install:
 	mkdir -p $(VENV_DIR)/bin
 	cp -f *.sh $(VENV_DIR)/bin/
 	cp -f *.py $(VENV_DIR)/bin/
-	cp -f *.json /boot/firmware/rb
+	cp -f voiceia.version /opt/stratux
+	test -f /boot/firmware/rb/rbvoice-aircraft-rules.json || cp -f rbvoice-aircraft-rules.json /boot/firmware/rb
+	test -f /boot/firmware/rb/rbvoice-cases.it.json || cp -f rbvoice-cases.it.json /boot/firmware/rb
 	chmod 755 $(VENV_DIR)/bin/*.sh
 	cp rbvoice.service /lib/systemd/system
 	systemctl daemon-reload

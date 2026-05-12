@@ -3,6 +3,7 @@
   "wake_words": [
     "compiute",
     "computer",
+    "copriwater",
     "primario",
     "secondario",
     "backup",
@@ -176,7 +177,7 @@
           "path": "/getTraffic",
           "method": "",
           "json_path": "",
-          "reply_template": "Sono stati riportati {TrafficCount} traffici, il più vicino è {TrafficLocation} e dista {TrafficDistance} chilometri"
+          "reply_template": "Sono stati riportati {TrafficCount} traffici, il più vicino è {TrafficLocation} e dista {TrafficDistance:.0f} chilometri"
         }
       }
     },
@@ -196,15 +197,19 @@
         "cht1": "cht1",
         "cilindro uno": "cht1",
         "primo cilindro": "cht1",
+        "temperatura primo cilindro": "cht1",
         "cht2": "cht2",
         "secondo cilindro": "cht2",
+        "temperatura secondo cilindro": "cht2",
         "cilindro due": "cht2",
         "cht3": "cht3",
         "terzo cilindro": "cht3",
+        "temperatura terzo cilindro": "cht3",
         "cilindro tre": "cht3",
         "cht4": "cht4",
         "cilindro quattro": "cht4",
         "quarto cilindro": "cht4",
+        "temperatura quarto cilindro": "cht4",
         "egt1": "egt1",
         "scarico uno": "egt1",
         "scarico due": "egt2",
@@ -214,7 +219,12 @@
         "secondo scarico": "egt2",
         "terzo scarico": "egt3",
         "quarto scarico": "egt4",
+        "temperaratura primo scarico": "egt1",
+        "temperaratura secondo scarico": "egt2",
+        "temperaratura terzo scarico": "egt3",
+        "temperaratura quarto scarico": "egt4",
         "motore": "fullengine",
+        "temperature motore": "fullengine",
         "scarichi": "egt",
         "cilindri": "cht",
         "temperature scarichi": "egt",
@@ -226,7 +236,9 @@
         "collettore": "manifoldpressure",
         "pressione collettore": "manifoldpressure",
         "olio": "oiltemperature",
+        "temperatura olio": "oiltemperature",
         "esterna": "outsidetemperature",
+        "temperatura esterna": "outsidetemperature",
         "aria": "outsidetemperature"
       },
       "endpoints": {
@@ -234,8 +246,8 @@
           "path": "/getEMS",
           "method": "helper_EMS_EngineStatus",
           "json_path": "",
-          "reply_template": "Olio in arco {OILAVG}. Giri motore {enginerpm}. I cilindri sono in arco {CHTAVG}. Gli scarichi sono in arco {EGTAVG}.",
-          "reply_template_old": "I giri motore sono: {enginerpm}, la temperatura dell'olio è {oiltemperature} gradi. Le temperature dei cilindri sono primo {cht1} gradi secondo {cht2} gradi terzo {cht3} gradi quarto {cht4} gradi, Le temperature degli scarichi sono primo {egt1} gradi secondo {egt2} gradi terzo {egt3} gradi quarto {egt4} gradi. Ad ora non sono riportate anomalie."
+          "reply_template": "Olio in arco {OILAVG}. Giri motore {enginerpm:.0f}. I cilindri sono in arco {CHTAVG}. Gli scarichi sono in arco {EGTAVG}.",
+          "reply_template_old": "I giri motore sono: {enginerpm:.0f}, la temperatura dell'olio è {oiltemperature:.0f} gradi. Le temperature dei cilindri sono primo {cht1:.0f} gradi secondo {cht2:.0f} gradi terzo {cht3:.0f} gradi quarto {cht4:.0f} gradi, Le temperature degli scarichi sono primo {egt1:.0f} gradi secondo {egt2:.0f} gradi terzo {egt3:.0f} gradi quarto {egt4:.0f} gradi. Ad ora non sono riportate anomalie."
         },
         "egt": {
           "path": "/getEMS",
@@ -253,31 +265,31 @@
           "path": "/getEMS",
           "method": "",
           "json_path": "batteryvoltage",
-          "reply_template": "La tensione della batteria è {batteryvoltage} volt"
+          "reply_template": "La tensione della batteria è {batteryvoltage:.0f} volt"
         },
         "alternatorout": {
           "path": "/getEMS",
           "method": "",
           "json_path": "alternatorout",
-          "reply_template": "L'alternatore è a {alternatorout} ampere"
+          "reply_template": "L'alternatore è a {alternatorout:.0f} ampere"
         },
         "enginerpm": {
           "path": "/getEMS",
           "method": "",
           "json_path": "enginerpm",
-          "reply_template": "RPM motore {enginerpm}"
+          "reply_template": "RPM motore {enginerpm:.0f}"
         },
         "fuelremaining": {
           "path": "/getEMS",
           "method": "",
           "json_path": "fuelremaining",
-          "reply_template": "Carburante rimanente {fuelremaining} litri"
+          "reply_template": "Carburante rimanente {fuelremaining:.0f} litri"
         },
         "oilpressure": {
           "path": "/getEMS",
           "method": "",
           "json_path": "oilpressure",
-          "reply_template": "Pressione olio {oilpressure} PSI"
+          "reply_template": "Pressione olio {oilpressure:.0f} PSI"
         },
         "amps": {
           "path": "/getEMS",
@@ -289,91 +301,91 @@
           "path": "/getEMS",
           "method": "",
           "json_path": "cht1",
-          "reply_template": "Primo cilindro {cht1} gradi"
+          "reply_template": "Primo cilindro {cht1:.0f} gradi"
         },
         "cht2": {
           "path": "/getEMS",
           "method": "",
           "json_path": "cht2",
-          "reply_template": "Secondo cilindro {cht2} gradi"
+          "reply_template": "Secondo cilindro {cht2:.0f} gradi"
         },
         "cht3": {
           "path": "/getEMS",
           "method": "",
           "json_path": "cht3",
-          "reply_template": "Terzo cilindro {cht3} gradi"
+          "reply_template": "Terzo cilindro {cht3:.0f} gradi"
         },
         "cht4": {
           "path": "/getEMS",
           "method": "",
           "json_path": "cht4",
-          "reply_template": "Quarto cilindro {cht4} gradi"
+          "reply_template": "Quarto cilindro {cht4:.0f} gradi"
         },
         "egt1": {
           "path": "/getEMS",
           "method": "",
           "json_path": "egt1",
-          "reply_template": "Primo scarico {egt1} gradi"
+          "reply_template": "Primo scarico {egt1:.0f} gradi"
         },
         "egt2": {
           "path": "/getEMS",
           "method": "",
           "json_path": "egt2",
-          "reply_template": "Secondo scarico {egt2} gradi"
+          "reply_template": "Secondo scarico {egt2:.0f} gradi"
         },
         "egt3": {
           "path": "/getEMS",
           "method": "",
           "json_path": "egt3",
-          "reply_template": "Terzo scarico {egt3} gradi"
+          "reply_template": "Terzo scarico {egt3:.0f} gradi"
         },
         "egt4": {
           "path": "/getEMS",
           "method": "",
           "json_path": "egt4",
-          "reply_template": "Quarto scarico {egt4} gradi"
+          "reply_template": "Quarto scarico {egt4:.0f} gradi"
         },
         "fuel": {
           "path": "/getEMS",
           "method": "",
           "json_path": "fuel",
-          "reply_template": "Rimanenti {fuel} litri"
+          "reply_template": "Rimanenti {fuel:.0f} litri"
         },
         "fuel1": {
           "path": "/getEMS",
           "method": "",
           "json_path": "fuel1",
-          "reply_template": "Rimanenti {fuel1} litri"
+          "reply_template": "Rimanenti {fuel1:.0f} litri"
         },
         "fuel2": {
           "path": "/getEMS",
           "method": "",
           "json_path": "fuel2",
-          "reply_template": "Rimanenti {fuel2} litri"
+          "reply_template": "Rimanenti {fuel2:.0f} litri"
         },
         "fuelpressure": {
           "path": "/getEMS",
           "method": "",
           "json_path": "fuelpressure",
-          "reply_template": "Pressione carburante {fuelpressure} psi"
+          "reply_template": "Pressione carburante {fuelpressure:.0f} psi"
         },
         "manifoldpressure": {
           "path": "/getEMS",
           "method": "",
           "json_path": "manifoldpressure",
-          "reply_template": "Pressione collettore {manifoldpressure} psi"
+          "reply_template": "Pressione collettore {manifoldpressure:.0f} psi"
         },
         "oiltemperature": {
           "path": "/getEMS",
           "method": "",
           "json_path": "oiltemperature",
-          "reply_template": "Temperatura olio {oiltemperature} gradi"
+          "reply_template": "Temperatura olio {oiltemperature:.0f} gradi"
         },
         "outsidetemperature": {
           "path": "/getEMS",
           "method": "",
           "json_path": "outsidetemperature",
-          "reply_template": "Temperatura aria esterna {outsidetemperature} gradi"
+          "reply_template": "Temperatura aria esterna {outsidetemperature:.0f} gradi"
         }
       }
     },
@@ -597,7 +609,7 @@
           "path": "/autopilot",
           "method": "helper_AutopilotDestination",
           "json_path": "-1",
-          "reply_template": "Per arrivare a {Cmt}, impiegherai ancora {MinutesToDestination} minuti e {NMToDestination} miglia nautiche"
+          "reply_template": "Per arrivare a {Cmt}, impiegherai ancora {MinutesToDestination:.0f} minuti e {NMToDestination:.0f} miglia nautiche"
         }
       }
     },

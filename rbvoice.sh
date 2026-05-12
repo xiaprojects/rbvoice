@@ -32,7 +32,22 @@ wait_for_bt_input() {
 # Example of remote server
 SERVER="http://192.168.1.30"
 SERVER="http://192.168.10.1"
+
+# VOSK Models: https://alphacephei.com/vosk/models
+# Piper Models: https://huggingface.co/rhasspy/piper-voices/tree/main/fr/fr_FR
+
+# Example for FRENCH Language
+# Full model for 4GB RAM
+VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-fr-0.22
+# Small model for 2GB RAM
+#VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-small-fr-0.22
+PIPERONNX=$(dirname $0)/../piper-models/fr_FR-mls-medium.onnx
+PIPERCONF=$(dirname $0)/../piper-models/fr_FR-mls-medium.onnx.json
+CASESPATH=/boot/firmware/rb/rbvoice-cases.fr.json
+
+# Example for ITALIAN Language
 VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-it-0.22
+#VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-small-it-0.22
 PIPERONNX=$(dirname $0)/../piper-models/it_IT-paola-medium.onnx
 PIPERCONF=$(dirname $0)/../piper-models/it_IT-paola-medium.onnx.json
 RECPATH=/opt/stratux/www/playback/
@@ -40,5 +55,5 @@ CASESPATH=/boot/firmware/rb/rbvoice-cases.it.json
 # External pipe-play.sh and pipe-rec.sh
 PATH=$(dirname $0):$PATH
 
-exec python $(dirname $0)/rbvoice.py --rec $RECPATH --server $SERVER --out "$DEVOUT" --dev "$DEV" --model $VOSKMODEL --piper-model $PIPERONNX --piper-json $PIPERCONF --cases $CASESPATH
+exec python $(dirname $0)/rbvoice.py --threshold 450 --rec $RECPATH --server $SERVER --out "$DEVOUT" --dev "$DEV" --model $VOSKMODEL --piper-model $PIPERONNX --piper-json $PIPERCONF --cases $CASESPATH
 

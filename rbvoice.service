@@ -6,6 +6,7 @@ PartOf=user-runtime-dir@1000.service
 
 [Service]
 WorkingDirectory=/opt/rbvoice
+ExecStartPre=sleep 10
 ExecStart=/bin/bash -lc bin/rbvoice.sh
 User=pi
 KillMode=process
@@ -13,6 +14,7 @@ Restart=always
 RestartSec=60
 StandardOutput=syslog
 StandardError=syslog
+Nice=10
 
 [Install]
 WantedBy=multi-user.target
