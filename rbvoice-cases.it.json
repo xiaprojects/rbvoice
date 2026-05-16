@@ -17,6 +17,7 @@
   ],
   "base_url": "http://localhost",
   "answers": {
+    "startup": "il sistema è pronto",
     "egt1": "primo scarico",
     "egt2": "secondo scarico",
     "egt3": "terzo scarico",
