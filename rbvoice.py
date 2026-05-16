@@ -402,7 +402,9 @@ def startVR():
     #rec.SetEndpointerDelays(2.0, 0.7, 5.0)
     startupTime = datetime.now().strftime('%Y%m%d%H%M%S')
     historyFile = f'{RECORDINGSPATH}/vr_{startupTime}.json'
-    speak("Il sistema è pronto",startupTime,SAMPLE_RATE_PLAY, DEVOUT, RECORDINGSPATH)
+    welcomePhrase = CONFIG["answers"]["startup"]
+    print(welcomePhrase)
+    speak(welcomePhrase,startupTime,SAMPLE_RATE_PLAY, DEVOUT, RECORDINGSPATH)
 
     try:
         while True:
