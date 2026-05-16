@@ -42,7 +42,7 @@ VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-fr-0.22
 # Small model for 2GB RAM
 #VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-small-fr-0.22
 PIPERONNX=$(dirname $0)/../piper-models/fr_FR-mls-medium.onnx
-PIPERCONF=$(dirname $0)/../piper-models/fr_FR-mls-medium.onnx.json
+PIPERCONF=$(dirname $0)/../piper-models/fr_FR-mls-medium.onnx.json                
 CASESPATH=/boot/firmware/rb/rbvoice-cases.fr.json
 
 # Example for ITALIAN Language

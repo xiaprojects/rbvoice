@@ -11,10 +11,13 @@ MODEL_URL := https://alphacephei.com/vosk/models/$(MODEL_ZIP)
 
 # ---- Piper ----
 PIPER_DIR := $(VENV_DIR)/piper-models
-PIPER_VOICE ?= it_IT-paola-medium
-PIPER_BASE_URL := https://huggingface.co/rhasspy/piper-voices/resolve/main/it/it_IT/paola/medium
+PIPER_VOICE ?= it/it_IT/paola/medium/it_IT-paola-medium
+PIPER_BASE_URL := https://huggingface.co/rhasspy/piper-voices/resolve/main
 PIPER_ONNX := $(PIPER_VOICE).onnx
 PIPER_JSON := $(PIPER_VOICE).onnx.json
+PIPER_ONNX_FILENAME := $(shell basename $(PIPER_ONNX))
+PIPER_JSON_FILENAME := $(shell basename $(PIPER_JSON))
+
 all:
 	echo Makefile options
 
@@ -26,6 +29,7 @@ install:
 	cp -f voiceia.version /opt/stratux
 	test -f /boot/firmware/rb/rbvoice-aircraft-rules.json || cp -f rbvoice-aircraft-rules.json /boot/firmware/rb
 	test -f /boot/firmware/rb/rbvoice-cases.it.json || cp -f rbvoice-cases.it.json /boot/firmware/rb
+	test -f /boot/firmware/rb/rbvoice-cases.fr.json || cp -f rbvoice-cases.fr.json /boot/firmware/rb
 	chmod 755 $(VENV_DIR)/bin/*.sh
 	cp rbvoice.service /lib/systemd/system
 	systemctl daemon-reload
@@ -33,8 +37,8 @@ install:
 
 piper-model:
 	mkdir -p $(PIPER_DIR)
-	wget -O $(PIPER_DIR)/$(PIPER_ONNX) $(PIPER_BASE_URL)/$(PIPER_ONNX)?download=true
-	wget -O $(PIPER_DIR)/$(PIPER_JSON) $(PIPER_BASE_URL)/$(PIPER_JSON)?download=true
+	wget -O $(PIPER_DIR)/$(PIPER_ONNX_FILENAME) $(PIPER_BASE_URL)/$(PIPER_ONNX)
+	wget -O $(PIPER_DIR)/$(PIPER_JSON_FILENAME) $(PIPER_BASE_URL)/$(PIPER_JSON)
 
 vosk-model:
 	mkdir -p $(MODEL_DIR)
