@@ -41,7 +41,11 @@
     "trafficNone": "Aucun trafic signalé",
     "trafficAbove": "trafic au-dessus de vous",
     "trafficBelow": "trafic en dessous de vous",
-    "trafficClock": "traffic dans tes"
+    "trafficClock": "traffic dans tes",
+    "autopilotNone": "aucune destination définie",
+    "autopilotNoGps": "position GPS indisponible",
+    "autopilotError": "pilote automatique indisponible",
+    "radioNotFound": "je n'ai pas compris la fréquence, donnez-moi le numéro ou le nom de la station"
   },
   "numbers": {
     "main_words": [
@@ -158,10 +162,10 @@
     },
     "traffic": {
       "keywords": {
-        "traffici": "traffic",
-        "traffi vicini": "traffic",
-        "traffici torno": "traffic",
-        "traffico": "traffic"
+        "trafic": "traffic",
+        "trafic proche": "traffic",
+        "trafic autour": "traffic",
+        "trafics": "traffic"
       },
       "endpoints": {
         "traffic": {
@@ -235,7 +239,7 @@
           "reply_template": "Les échappements sont à {EGTAVG} degrés et la différence est {EGTDIFF}, le plus chaud est {CHTMAXPROBELABEL}"
         },
         "cht": {
-          "tpath": "/getEMS",
+          "path": "/getEMS",
           "method": "helper_EMS_EngineStatus",
           "json_path": "",
           "reply_template": "Les cylindres sont à {CHTAVG} degrés et la différence est {CHTDIFF}, le plus chaud est à {CHTMAXPROBELABEL} degrés, le plus froid est à {CHTMIN} degrés et est {CHTMINPROBELABEL}"
@@ -391,7 +395,7 @@
         "indicateur de virage": "AHRSSlipSkid",
         "sphère": "AHRSSlipSkid",
         "dérive": "AHRSSlipSkid",
-        "glissade": "AHRSSlip_Skid",
+        "glissade": "AHRSSlipSkid",
         "centrage": "AHRSSlipSkid",
         "virage": "AHRSTurnRate",
         "taux de virage": "AHRSTurnRate",
@@ -569,70 +573,75 @@
           "json_path": "AHRSGLoadMax",
           "reply_template": "Charge maximale {AHRSGLoadMax:.1f} G"
         }
+      }
+    },
+    "autopilot": {
+      "keywords": {
+        "destination": "destination",
+        "arrivé": "destination",
+        "fin": "destination",
+        "distance": "destination",
+        "reste": "destination",
+        "temps": "destination",
+        "pilote automatique": "destination"
       },
-      "autopilot": {
-        "keywords": {
-          "destination": "destination",
-          "arrivé": "destination",
-          "fin": "destination",
-          "distance": "destination",
-          "missing": "destination",
-          "time": "destination"
-        },
-        "endpoints": {
-          "destination": {
-            "path": "/autopilot",
-            "method": "helper_AutopilotDestination",
-            "json_path": "-1",
-            "reply_template": "Pour arriver à {Cmt}, il vous faudra encore {MinutesToDestination} minutes et {NMToDestination} milles nautiques"
-          }
+      "endpoints": {
+        "destination": {
+          "path": "/autopilot",
+          "method": "",
+          "json_path": "",
+          "reply_template": "Pour arriver à {DestinationName}, il vous faudra encore {MinutesToDestination:.0f} minutes et {NMToDestination:.0f} milles nautiques",
+          "reply_template_stationary": "{DestinationName} est à {NMToDestination:.0f} milles nautiques, direction {BearingToDestination:.0f} degrés",
+          "reply_template_set": "Direct {DestinationName}, {NMToDestination:.0f} milles nautiques, direction {BearingToDestination:.0f} degrés",
+          "reply_template_stop": "Pilote automatique désengagé"
         }
+      }
+    },
+    "radio": {
+      "keywords": {
+        "fréquence radio": "radio",
+        "radio fréquence": "radio"
       },
-      "radio": {
-        "keywords": {
-          "radio frequency": "radio",
-          "frequency radio": "radio"
-        },
-        "endpoints": {
-          "radio": {
-            "path": "/radio",
-            "method": "",
-            "json_path": "",
-            "reply_template": "Fréquence radio {FrequencyStandby} réglée"
-          }
+      "endpoints": {
+        "radio": {
+          "path": "/radio",
+          "frequencies_path": "/settings/db.frequencies.json",
+          "method": "",
+          "json_path": "",
+          "reply_template": "Fréquence {FrequencyStandby} {LabelStandby} réglée"
         }
+      }
+    },
+    "airfields": {
+      "keywords": {
+        "trouve": "find",
+        "cherche": "find",
+        "recherche": "find",
+        "aérodrome": "find",
+        "aéroport": "find",
+        "piste": "find",
+        "terrain": "find",
+        "radio": "find"
       },
-      "airfields": {
-        "keywords": {
-          "find": "find",
-          "search me": "find",
-          "search for": "find",
-          "airstrip": "find",
-          "airport": "find",
-          "runway": "find",
-          "field": "find",
-          "radio": "find"
-        },
-        "endpoints": {
-          "find": {
-            "path": "/settings/db.airfields.json",
-            "method": "",
-            "json_path": "",
-            "reply_template": "{name} trouvé, altitude {Ele} pieds, fréquence radio : {freq}, à {POIDISTANCE:.1          } direction {POIBEARING:.0f} degrés"
-          }
+      "endpoints": {
+        "find": {
+          "path": "/settings/db.airfields.json",
+          "method": "",
+          "json_path": "",
+          "reply_template": "{name} trouvé, altitude {Ele} pieds, fréquence radio : {freq}, à {POIDISTANCE:.1f} direction {POIBEARING:.0f} degrés"
         }
+      }
+    },
+    "timers": {
+      "keywords": {
+        "timer": "timer"
       },
-      "timers": {
-        "keywords": {
-          "timer": "timer"
-        },
-        "endpoints": {
-          "timer": {
-            "path": "/timers",
-            "method": "",
-            "json_path": "",
-            "reply_template": "Le timer {timer name} est {timer status} et compte {timer count}"
-          }
+      "endpoints": {
+        "timer": {
+          "path": "/timers",
+          "method": "",
+          "json_path": "",
+          "reply_template": "Le timer {timer name} est {timer status} et compte {timer count}"
         }
       }
     }

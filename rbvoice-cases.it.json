@@ -43,7 +43,11 @@
     "trafficNone": "Nessun traffico riportato",
     "trafficAbove": "sopra di te",
     "trafficBelow": "sotto di te",
-    "trafficClock": "alle tue ore"
+    "trafficClock": "alle tue ore",
+    "autopilotNone": "nessuna destinazione impostata",
+    "autopilotNoGps": "posizione GPS non disponibile",
+    "autopilotError": "autopilota non disponibile",
+    "radioNotFound": "non ho capito la frequenza, dimmi il numero o il nome della stazione"
   },
   "numbers": {
     "main_words": [
@@ -603,14 +607,18 @@
         "finale": "destination",
         "distanza": "destination",
         "manca": "destination",
-        "tempo": "destination"
+        "tempo": "destination",
+        "autopilota": "destination"
       },
       "endpoints": {
         "destination": {
           "path": "/autopilot",
-          "method": "helper_AutopilotDestination",
-          "json_path": "-1",
-          "reply_template": "Per arrivare a {Cmt}, impiegherai ancora {MinutesToDestination:.0f} minuti e {NMToDestination:.0f} miglia nautiche"
+          "method": "",
+          "json_path": "",
+          "reply_template": "Per arrivare a {DestinationName}, impiegherai ancora {MinutesToDestination:.0f} minuti e {NMToDestination:.0f} miglia nautiche",
+          "reply_template_stationary": "{DestinationName} dista {NMToDestination:.0f} miglia nautiche, direzione {BearingToDestination:.0f} gradi",
+          "reply_template_set": "Diretto a {DestinationName}, {NMToDestination:.0f} miglia nautiche, direzione {BearingToDestination:.0f} gradi",
+          "reply_template_stop": "Autopilota disinserito"
         }
       }
     },
@@ -622,9 +630,10 @@
       "endpoints": {
         "radio": {
           "path": "/radio",
+          "frequencies_path": "/settings/db.frequencies.json",
           "method": "",
           "json_path": "",
-          "reply_template": "Frequenza {FrequencyStandby} radio impostata"
+          "reply_template": "Frequenza {FrequencyStandby} {LabelStandby} impostata"
         }
       }
     },

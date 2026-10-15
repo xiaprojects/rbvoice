@@ -418,7 +418,8 @@ def handle_traffic(context: str, component: str, action: str, parameter: str, te
         for traffic in data:
             if traffic["Position_valid"] == True:
                 dist, bearing = gps_distance_bearing(mySituationData["GPSLatitude"], mySituationData["GPSLongitude"], traffic["Lat"], traffic["Lng"])
-                if mostNearbyDistance == 0 or dist < mostNearbyDistance:
+                if mostNearbyTraffic == None or dist < mostNearbyDistance:
+                    mostNearbyDistance = dist
                     mostNearbyTraffic = traffic
 
 
@@ -458,16 +459,95 @@ def handle_display(context: str, component: str, action: str, parameter: str, te
     template = comp_cfg['endpoints'][component]['reply_template']
     return template.format(**ctx.Context)
 
-def findRadioLabelByFrequencyOffline(filename, frequency):
-    with open(filename, 'r') as f:
-        data = json.load(f)
-        for v in data:
-            if "freq" in v and v["freq"]==frequency:
-                return v["name"]
-    return "---"
-    
+# Station names are matched word by word, like the wake word: every spoken word must match a word
+# of the name (similarity_ratio is too lenient on short words: "radio" ~ "PADOVA" 0.73).
+# Among names scoring within FREQUENCY_NAME_TIE of the best, the name the words cover most wins
+# ("milano" is MILANO, not Milano Linate Airport), then the nearest station (MILANO has four sectors)
+FREQUENCY_NAME_WORD_MIN = 0.85
+FREQUENCY_NAME_TIE = 0.05
+
+
+def is_number_word(word: str, lang: str) -> bool:
+    try:
+        text2num(word, lang=lang)
+        return True
+    except Exception:
+        return False
+
+
+def is_com_frequency(frequency: str) -> bool:
+    """VHF COM band 118.000-136.990 MHz, in the RB-01 radio format "118.500"."""
+    match = re.fullmatch(r"(\d{3})\.(\d{3})", frequency)
+    return bool(match) and 118000 <= int(match[1] + match[2]) <= 136990
+
+
+def known_frequencies(config: Dict) -> List[dict]:
+    """Named frequencies merged like the RB-01 radio page: db.frequencies.json first, then the airfields."""
+    radio_cfg = config['components']['radio']['endpoints']['radio']
+    airfields_cfg = config['components']['airfields']['endpoints']['find']
+    base_url = config['base_url'].rstrip('/')
+    known = []
+    try:
+        resp = requests.get(base_url + radio_cfg['frequencies_path'], timeout=60.0)
+        resp.raise_for_status()
+        for freq, item in resp.json().get("global", {}).items():
+            gps = item.get("gps", {})
+            known.append({"freq": freq, "name": item.get("name", ""), "Lat": gps.get("lat"), "Lon": gps.get("lon")})
+    except Exception as e:
+        # Older RB-01 images have no frequency database: the airfields are still available
+        print(f"Frequency database not available: {e}")
+
+    resp = requests.get(base_url + airfields_cfg['path'], timeout=60.0)
+    resp.raise_for_status()
+    for airfield in resp.json():
+        freq = airfield.get("freq", "")
+        if freq and "." not in freq:
+            freq = freq + "."  # bad cases where the frequency is "118"
+        known.append({"freq": freq.ljust(7, "0"), "name": airfield.get("name", ""), "Lat": airfield.get("Lat"), "Lon": airfield.get("Lon")})
+
+    # Never offer something the radio cannot tune
+    return [k for k in known if k["name"] and is_com_frequency(k["freq"])]
+
+
+def find_frequency_by_name(text: str, known: List[dict], base_url: str) -> Optional[dict]:
+    words = normalize_text(text).split()
+    if not words:
+        return None
+    scored = []
+    for k in known:
+        name_words = normalize_text(k["name"]).split()
+        if not name_words:
+            continue
+        ratios = [max(difflib.SequenceMatcher(None, w, nw).ratio() for nw in name_words) for w in words]
+        if min(ratios) >= FREQUENCY_NAME_WORD_MIN:
+            coverage = min(1.0, len(words) / len(name_words))
+            scored.append((sum(ratios) / len(ratios), coverage, k))
+    print(f"Radio name '{' '.join(words)}': {len(scored)} match(es)")
+    if not scored:
+        return None
+    best_score = max(score for score, coverage, k in scored)
+    candidates = [(coverage, k) for score, coverage, k in scored if score >= best_score - FREQUENCY_NAME_TIE]
+    best_coverage = max(coverage for coverage, k in candidates)
+    candidates = [k for coverage, k in candidates if coverage == best_coverage]
+    if len(candidates) > 1:
+        try:
+            mySituation = requests.get(f"{base_url}/getSituation", timeout=60.0)
+            mySituation.raise_for_status()
+            mySituationData = mySituation.json()
+            if mySituationData.get("GPSFixQuality"):
+                def distance(k):
+                    if k["Lat"] is None or k["Lon"] is None:
+                        return float("inf")
+                    return gps_distance_bearing(mySituationData["GPSLatitude"], mySituationData["GPSLongitude"], k["Lat"], k["Lon"])[0]
+                candidates.sort(key=distance)
+        except Exception:
+            print(traceback.format_exc())
+    return candidates[0]
+
+
 def handle_radio(context: str, component: str, action: str, parameter: str, text: str, config: Dict,ctx: SessionContext) -> str:
     #imposta frequenza radio centodicotto decimali centocinquanta
+    #imposta frequenza radio perugia approach
     print(f"context {context}")
     print(f"component {component}")
     print(f"action {action}")
@@ -477,60 +557,166 @@ def handle_radio(context: str, component: str, action: str, parameter: str, text
     base_url = config['base_url'].rstrip('/')
     path = comp_cfg['endpoints'][component]['path']
     template = comp_cfg['endpoints'][component]['reply_template']
-    ctx.Context["FrequencyStandby"] = parse_frequency(text,config["language"],config["numbers"])
 
-    urlRadioGet = f"{base_url}/radio"
+    known = known_frequencies(config)
+    frequency = parse_frequency(text,config["language"],config["numbers"])
+    if is_com_frequency(frequency):
+        label = next((k["name"] for k in known if k["freq"] == frequency), "")
+    else:
+        # No frequency spoken: try the known frequency names. Only one word of the keyword
+        # ("frequenza radio") is removed upstream, so drop the remaining keyword words first.
+        # Numbers never name a station: "cinque" alone must not match "Massa Cinquale"
+        keyword_words = {w for kw in comp_cfg['keywords'] for w in normalize_text(kw).split()}
+        decimal_markers = {m.lower() for m in config["numbers"]["main_words"]}
+        name_text = " ".join(w for w in normalize_text(text).split()
+                             if w not in keyword_words and w not in decimal_markers and not is_number_word(w, config["language"]))
+        match = find_frequency_by_name(name_text, known, base_url)
+        if match is None:
+            return config['answers']['radioNotFound']
+        frequency = match["freq"]
+        label = match["name"]
+    ctx.Context["FrequencyStandby"] = frequency
+    ctx.Context["LabelStandby"] = label
+
+    urlRadioGet = f"{base_url}{path}"
     radioGet = requests.get(urlRadioGet, timeout=60.0)
     radioGet.raise_for_status()
     radioData = radioGet.json()
     if len(radioData):
-        radioData[0]["FrequencyStandby"] = ctx.Context["FrequencyStandby"]
-        radioData[0]["LabelStandby"] = findRadioLabelByFrequencyOffline("/boot/firmware/rb/db.airfields.json",ctx.Context["FrequencyStandby"])
-        
-        urlRadioPost = f"{base_url}/radio/0"
+        radioData[0]["FrequencyStandby"] = frequency
+        radioData[0]["LabelStandby"] = label or "---"
+
+        urlRadioPost = f"{base_url}{path}/0"
         urlRadioResult=requests.post(urlRadioPost, json=radioData[0], timeout=60.0)
         print(f"{urlRadioResult.text}")
+        urlRadioResult.raise_for_status()
     return template.format(**ctx.Context)
 
-def handle_autopilot(context: str, component: str, action: str, parameter: str, text: str, config: Dict,ctx: SessionContext) -> str:
-    comp_cfg = config['components']['autopilot']
+# RB-01 autopilot (roastbeef main/autopilot.go): GET /autopilot returns the plan as a list of
+# Waypoint {Lat, Lon, Ele (int feet), Status, Cmt}, POST replaces the plan, PUT starts, DELETE stops
+WAYPOINT_STATUS_PATH = 0
+WAYPOINT_STATUS_TARGET = 1
+WAYPOINT_STATUS_PAST = 2
+KM_PER_NM = 1.852
+# Below this ground speed (knots) a time to destination is meaningless: RB-01 Hobbs meter uses 50 km/h
+AUTOPILOT_MIN_GROUND_SPEED = 27
+# Engaging the autopilot needs a clear airfield match: generic words like "campo" match many airfields
+AIRFIELD_MIN_SCORE = 0.7
+AIRFIELD_MIN_MARGIN = 0.08
+
+
+def autopilot_target(waypoints: list) -> Optional[dict]:
+    """The waypoint the autopilot steers to, else the last one not yet passed."""
+    for w in waypoints:
+        if w.get("Status") == WAYPOINT_STATUS_TARGET:
+            return w
+    for w in reversed(waypoints):
+        if w.get("Status") != WAYPOINT_STATUS_PAST:
+            return w
+    return None
+
+
+def autopilot_reply(target: dict, template_key: str, config: Dict, ctx: SessionContext) -> str:
+    endpoint_cfg = config['components']['autopilot']['endpoints']['destination']
     base_url = config['base_url'].rstrip('/')
-    path = comp_cfg['path']
-    url = f"{base_url}/{path}"
+    cmt = target.get("Cmt", "")
+    ctx.Context["Cmt"] = cmt
+    ctx.Context["DestinationName"] = cmt.split(",")[0].strip()
 
-    if action == "GET" and parameter == "destination":
-        try:
-            resp = requests.get(url, timeout=60.0)
-            resp.raise_for_status()
-            data = resp.json()
-            if data and isinstance(data, list) and len(data) > 0:
-                latest = data[-1]
-                cmt = latest.get('Cmt', 'unknown')
-                return f"Current destination: {cmt}"
-            return "No destinations set."
-        except Exception as e:
-            print(traceback.format_exc())
-            return ""
+    mySituation = requests.get(f"{base_url}/getSituation", timeout=60.0)
+    mySituation.raise_for_status()
+    mySituationData = mySituation.json()
+    if not mySituationData.get("GPSFixQuality"):
+        return f"{ctx.Context['DestinationName']}, {config['answers']['autopilotNoGps']}"
 
-    elif action == "SET" and parameter == "destination":
-        try:
-            resp = requests.post(url, json={"text": text}, timeout=60.0)
-            resp.raise_for_status()
-            return f"Destination set to: {text}"
-        except Exception as e:
-            print(traceback.format_exc())
-            return ""
+    dist, bearing = gps_distance_bearing(mySituationData["GPSLatitude"], mySituationData["GPSLongitude"], target["Lat"], target["Lon"])
+    ctx.Context["NMToDestination"] = dist / KM_PER_NM
+    ctx.Context["BearingToDestination"] = bearing
+    groundSpeed = mySituationData.get("GPSGroundSpeed", 0)  # knots
+    if groundSpeed >= AUTOPILOT_MIN_GROUND_SPEED:
+        ctx.Context["MinutesToDestination"] = 60.0 * ctx.Context["NMToDestination"] / groundSpeed
+    elif template_key == "reply_template":
+        template_key = "reply_template_stationary"
+    template = endpoint_cfg[template_key]
+    print(f"U {template}::{ctx.Context}")
+    return template.format(**ctx.Context)
 
-    elif action == "DELETE" and parameter == "destination":
-        try:
-            resp = requests.delete(url, timeout=60.0)
-            resp.raise_for_status()
-            return "Destination cancelled."
-        except Exception as e:
-            print(traceback.format_exc())
-            return ""
 
-    return ""
+def autopilot_direct_to(airfield: dict, config: Dict, ctx: SessionContext) -> str:
+    """Same flight plan as the RB-01 directToAirfield(): current position (passed) then the airfield."""
+    endpoint_cfg = config['components']['autopilot']['endpoints']['destination']
+    base_url = config['base_url'].rstrip('/')
+    url = base_url + endpoint_cfg['path']
+
+    mySituation = requests.get(f"{base_url}/getSituation", timeout=60.0)
+    mySituation.raise_for_status()
+    mySituationData = mySituation.json()
+
+    # Cmt formatted like the RB-01 airfields page, so the HSI shows the same label
+    cmt = ", ".join(str(airfield[k]) for k in ("name", "local_code", "gps_code") if airfield.get(k))
+    target = {
+        "Lat": airfield["Lat"],
+        "Lon": airfield["Lon"],
+        "Ele": int(airfield.get("Ele", 0)),  # Waypoint.Ele is an int32: a float would make the server reject the plan
+        "Status": WAYPOINT_STATUS_TARGET,
+        "Cmt": cmt,
+    }
+    waypoints = [
+        {
+            "Lat": mySituationData["GPSLatitude"],
+            "Lon": mySituationData["GPSLongitude"],
+            "Ele": int(mySituationData.get("BaroPressureAltitude", 0)),
+            "Status": WAYPOINT_STATUS_PAST,
+            "Cmt": "Current Position",
+        },
+        target,
+    ]
+    requests.post(url, json=waypoints, timeout=60.0).raise_for_status()
+    requests.put(url, timeout=60.0).raise_for_status()
+    return autopilot_reply(target, "reply_template_set", config, ctx)
+
+
+def autopilot_direct_to_by_name(text: str, config: Dict, ctx: SessionContext) -> str:
+    ranking = find_airfields(text, config)
+    if not ranking:
+        return config['answers']['didnotfindairfield']
+    best_score, airfield = ranking[0]
+    second_score = ranking[1][0] if len(ranking) > 1 else 0.0
+    print(f"Autopilot airfield '{text}': {airfield.get('name')} {best_score:.2f} (next {second_score:.2f})")
+    if best_score < AIRFIELD_MIN_SCORE or best_score - second_score < AIRFIELD_MIN_MARGIN:
+        return config['answers']['didnotfindairfield']
+    return autopilot_direct_to(airfield, config, ctx)
+
+
+def handle_autopilot(context: str, component: str, action: str, parameter: str, text: str, config: Dict,ctx: SessionContext) -> str:
+    endpoint_cfg = config['components']['autopilot']['endpoints']['destination']
+    base_url = config['base_url'].rstrip('/')
+    url = base_url + endpoint_cfg['path']
+
+    try:
+        if action == "DEL":
+            requests.delete(url, timeout=60.0).raise_for_status()
+            return endpoint_cfg['reply_template_stop']
+
+        if action == "SET" and normalize_text(text):
+            # "imposta destinazione perugia": direct to the named airfield
+            return autopilot_direct_to_by_name(text, config, ctx)
+
+        resp = requests.get(url, timeout=60.0)
+        resp.raise_for_status()
+        target = autopilot_target(resp.json() or [])
+        if target is None:
+            return config['answers']['autopilotNone']
+
+        if action == "SET":
+            # "avvia autopilota" without a destination: engage the plan already loaded
+            requests.put(url, timeout=60.0).raise_for_status()
+            return autopilot_reply(target, "reply_template_set", config, ctx)
+
+        return autopilot_reply(target, "reply_template", config, ctx)
+    except Exception as e:
+        print(traceback.format_exc())
+        return config['answers']['autopilotError']
 
 def handle_timers(context: str, component: str, action: str, parameter: str, text: str, config: Dict,ctx: SessionContext) -> str:
     comp_cfg = config['components']['timers']
@@ -554,13 +740,17 @@ def handle_timers(context: str, component: str, action: str, parameter: str, tex
             if similarity_ratio(search_name,config['answers']['delete'])>0.7 or similarity_ratio(search_name,config['answers']['cancel'])>0.7 or similarity_ratio(search_name,config['answers']['stop'])>0.7:
                 nextValueIs = False
 
+            # Voice acts on the first timer only
+            best_match = None
             for t in data:
                 best_match = t
                 break
 
             if best_match:
+                # Same as the RB-01 timerStart(): the server only fires a timer whose Fired is false
                 best_match["Status"] = nextValueIs
                 best_match["Epoch"] = int(time.time())
+                best_match["Fired"] = False
                 payload = json.dumps({"0":best_match}).encode("utf-8")
                 print(f"{payload}")
                 requests.post(url,payload)
@@ -594,7 +784,7 @@ def handle_timers(context: str, component: str, action: str, parameter: str, tex
                 if best_match["Status"] == True:
                     ctx.Context["timer status"]=config['answers']['started']
                     elapsed = int(time.time() - best_match["Epoch"])
-                    print(f"{time.time()} - {best_match["Epoch"]}")
+                    print(f"{time.time()} - {best_match['Epoch']}")
                     remaining = int(best_match["CountDown"] - elapsed)
                     if(remaining>0):
                         ctx.Context["timer count"]=f"{int(remaining/60)} {config['answers']['minutes']} {config['answers']['and']} {int(remaining%60)} {config['answers']['seconds']}"
@@ -602,11 +792,11 @@ def handle_timers(context: str, component: str, action: str, parameter: str, tex
                         ctx.Context["timer count"]=f"{int(elapsed/60)} {config['answers']['minutes']} {config['answers']['and']} {int(elapsed%60)} {config['answers']['seconds']}"
 
                 else:
-                    ctx.Context["timer count"]=f"{int(best_match["CountDown"]/60)} {config['answers']['minutes']} {config['answers']['and']} {int(best_match["CountDown"]%60)} {config['answers']['seconds']}"
+                    ctx.Context["timer count"]=f"{int(best_match['CountDown']/60)} {config['answers']['minutes']} {config['answers']['and']} {int(best_match['CountDown']%60)} {config['answers']['seconds']}"
                     ctx.Context["timer status"]=config['answers']['stopped']
                     
                 ctx.Context["timer fired"]="no"
-                print(f"{json.dumps(ctx.Context).encode("utf-8")}")
+                print(f"{json.dumps(ctx.Context).encode('utf-8')}")
                 template = comp_cfg['endpoints']['timer']['reply_template']
                 print(f"U {template}::{ctx.Context}")
                 return template.format(**ctx.Context)
@@ -618,31 +808,40 @@ def handle_timers(context: str, component: str, action: str, parameter: str, tex
     return ""
 
 
-def handle_airfields(context: str, component: str, action: str, parameter: str, text: str, config: Dict,ctx: SessionContext) -> str:
+def find_airfields(text: str, config: Dict) -> List[Tuple[float, dict]]:
+    """Airfields ranked by name similarity to text, best first; ties keep the database order."""
     comp_cfg = config['components']['airfields']
     base_url = config['base_url'].rstrip('/')
     path = comp_cfg['endpoints']['find']['path']
     url = f"{base_url}/{path}"
 
+    resp = requests.get(url, timeout=60.0)
+    resp.raise_for_status()
+    data = resp.json()
+    if not isinstance(data, list):
+        return []
+
+    search_name = normalize_text(text)
+    ranking = []
+    for airfield in data:
+        airfield_name = normalize_text(airfield.get('name', ''))
+        ratio = similarity_ratio(search_name, airfield_name)
+        if ratio > 0:
+            ranking.append((ratio, airfield))
+    ranking.sort(key=lambda r: -r[0])
+    return ranking
+
+
+def handle_airfields(context: str, component: str, action: str, parameter: str, text: str, config: Dict,ctx: SessionContext) -> str:
+    comp_cfg = config['components']['airfields']
+    base_url = config['base_url'].rstrip('/')
+
+    # No direct to from here: "radio" is also an airfields keyword, so "imposta radio foligno" would
+    # engage the autopilot. Direct to needs an autopilot keyword ("imposta destinazione foligno").
     if action == "GET":
         try:
-            resp = requests.get(url, timeout=60.0)
-            resp.raise_for_status()
-            data = resp.json()
-            if not isinstance(data, list):
-                return config['answers']['didnotfindairfield']
-
-            best_match = None
-            best_ratio = 0.0
-            search_name = normalize_text(text)
-
-            for airfield in data:
-                airfield_name = normalize_text(airfield.get('name', ''))
-                ratio = similarity_ratio(search_name, airfield_name)
-                print(f"X {search_name},{airfield_name},{ratio}")
-                if ratio > best_ratio:
-                    best_ratio = ratio
-                    best_match = airfield
+            ranking = find_airfields(text, config)
+            best_match = ranking[0][1] if ranking else None
 
             if best_match:
                 for k,v in best_match.items():
@@ -658,7 +857,7 @@ def handle_airfields(context: str, component: str, action: str, parameter: str, 
                 ctx.Context["POIDISTANCE"]=dist
                 ctx.Context["POIBEARING"]=bearing
 
-                print(f"{json.dumps(ctx.Context).encode("utf-8")}")
+                print(f"{json.dumps(ctx.Context).encode('utf-8')}")
                 return template.format(**ctx.Context)
             else:
                 return config['answers']['didnotfindairfield']
@@ -696,16 +895,6 @@ class ValueHelper:
             if match:
                 hour, minute = match.groups()
                 return f"{hour}:{minute}"
-            return values_dict
-
-
-    def helper_AutopilotDestination(self,parameter,values_dict) -> any:
-        if isinstance(values_dict, dict) and values_dict:
-            values_dict["Cmt"]="Pippo"
-            values_dict["MinutesToDestination"]=12
-            values_dict["NMToDestination"]=24
-            return values_dict
-        else:
             return values_dict
 
 
@@ -793,7 +982,7 @@ def handle_utterance(raw_text: str, ctx: SessionContext, config: Dict[str, Any])
         values_dict = method(parameter,values_dict)
     print(f"Data: {data}")
     print(f"Key: {endpoint_cfg['json_path']}")
-    print(f"{json.dumps(ctx.Context).encode("utf-8")}")
+    print(f"{json.dumps(ctx.Context).encode('utf-8')}")
     print(f"Ritorno: {values_dict}")
     template = endpoint_cfg['reply_template']
     if isinstance(values_dict, dict) and values_dict:
