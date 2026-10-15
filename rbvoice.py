@@ -101,12 +101,25 @@ def extractCommandsFromAirfieldsOnline(config, commands):
             commands.append(vv)
     return commands
 
+# Vosk looks grammar words up in the model vocabulary as they are, and the vocabulary is lowercase:
+# "Foligno" would be dropped ("Ignoring word missing in vocabulary"), "foligno" is kept
 def extractCommandsFromAirfieldsOffline(filename, commands):
     with open(filename, 'r') as f:
         data = json.load(f)
         for v in data:
             for vv in v["name"].split(" "):
-                commands.append(vv)
+                commands.append(vv.lower())
+        return commands
+
+def extractCommandsFromFrequenciesOffline(filename, commands):
+    # Named frequencies ("Perugia Approach"), absent on older RB images
+    if not os.path.isfile(filename):
+        return commands
+    with open(filename, 'r') as f:
+        data = json.load(f)
+        for v in data.get("global", {}).values():
+            for vv in v.get("name", "").split(" "):
+                commands.append(vv.lower())
         return commands
 
 
@@ -395,6 +408,7 @@ def startVR():
     print(f"{supportedGrammar}")
     #supportedGrammar = extractCommandsFromAirfields(CONFIG,supportedGrammar)
     supportedGrammar = extractCommandsFromAirfieldsOffline("/boot/firmware/rb/db.airfields.json",supportedGrammar)
+    supportedGrammar = extractCommandsFromFrequenciesOffline("/boot/firmware/rb/db.frequencies.json",supportedGrammar)
     stringOfCommands = json.dumps(supportedGrammar)
     #rec.SetWords(True)
     rec = KaldiRecognizer(model, SAMPLE_RATE_RECORDING, stringOfCommands)
