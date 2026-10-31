@@ -45,13 +45,39 @@ PIPERONNX=$(dirname $0)/../piper-models/fr_FR-mls-medium.onnx
 PIPERCONF=$(dirname $0)/../piper-models/fr_FR-mls-medium.onnx.json                
 CASESPATH=/boot/firmware/rb/rbvoice-cases.fr.json
 
+# Example for ENGLISH Language
+# make vosk-model MODEL=vosk-model-en-us-0.22 && make piper-model PIPER_VOICE=en/en_GB/alan/medium/en_GB-alan-medium
+VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-en-us-0.22
+#VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-small-en-us-0.15
+PIPERONNX=$(dirname $0)/../piper-models/en_GB-alan-medium.onnx
+PIPERCONF=$(dirname $0)/../piper-models/en_GB-alan-medium.onnx.json
+CASESPATH=/boot/firmware/rb/rbvoice-cases.en.json
+
+# Example for SPANISH Language
+# make vosk-model MODEL=vosk-model-es-0.42 && make piper-model PIPER_VOICE=es/es_ES/davefx/medium/es_ES-davefx-medium
+VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-es-0.42
+#VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-small-es-0.42
+PIPERONNX=$(dirname $0)/../piper-models/es_ES-davefx-medium.onnx
+PIPERCONF=$(dirname $0)/../piper-models/es_ES-davefx-medium.onnx.json
+CASESPATH=/boot/firmware/rb/rbvoice-cases.es.json
+
+# Example for GERMAN Language
+# make vosk-model MODEL=vosk-model-de-0.21 && make piper-model PIPER_VOICE=de/de_DE/thorsten/medium/de_DE-thorsten-medium
+VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-de-0.21
+#VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-small-de-0.15
+PIPERONNX=$(dirname $0)/../piper-models/de_DE-thorsten-medium.onnx
+PIPERCONF=$(dirname $0)/../piper-models/de_DE-thorsten-medium.onnx.json
+CASESPATH=/boot/firmware/rb/rbvoice-cases.de.json
+
 # Example for ITALIAN Language
 VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-it-0.22
 #VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-small-it-0.22
 PIPERONNX=$(dirname $0)/../piper-models/it_IT-paola-medium.onnx
 PIPERCONF=$(dirname $0)/../piper-models/it_IT-paola-medium.onnx.json
-RECPATH=/opt/stratux/www/playback/
 CASESPATH=/boot/firmware/rb/rbvoice-cases.it.json
+
+# The last language block above wins
+RECPATH=/opt/stratux/www/playback/
 # External pipe-play.sh and pipe-rec.sh
 PATH=$(dirname $0):$PATH
 

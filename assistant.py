@@ -75,43 +75,41 @@ def gps_distance_bearing(lat1, lon1, lat2, lon2):
 CONFIG: Dict[str, Any] = {}
 ctx = None
 
+# The audio input carries the radio and the intercom, so most utterances are not for the assistant.
+# A wake word counts only when it opens the utterance, and from WAKE_WORD_MIN: in flight recordings
+# "copiate" ~ copriwater (0.82) and "secondo" ~ secondario (0.82) triggered replies, and so did
+# wake words inside radio phrases ("tipo di aeromobile", "acceso il computer")
+WAKE_WORD_MIN = 0.85
+
 def detect_wake_word(
     text: str,
     wake_words: list[str],
-    min_score: float = 0.80
+    min_score: float = WAKE_WORD_MIN
 ) -> Tuple[float,Optional[str], Optional[str]]:
     """
-    Detects fuzzy wake word match (std lib only).
-    Returns (score 0-1, wake_word, remaining after match) or None.
-    Matches whole approximate words/phrases with SequenceMatcher ratio.
+    Detects fuzzy wake word match at the start of the text (std lib only).
+    Returns (score 0-1, wake_word, remaining after match), or (0, None, None).
+    Compares each wake word with the first 1 to 3 words using SequenceMatcher ratio,
+    so a wake word Vosk splits ("copri water") still matches.
     """
     if not text or not wake_words:
         return 0,None,None
 
-    t_lower = text.lower()
     candidates = []  # (score, end_idx, ww)
-    
+
     # Extract word spans (handles punctuation)
     words_spans = list(re.finditer(r"\b\w+\b", text))
-    
+    if not words_spans:
+        return 0,None,None
+
     for ww in wake_words:
         ww_lower = ww.lower()
-        # Single word matches
-        for m in words_spans:
-            candidate = text[m.start():m.end()]
+        for length in range(1, min(3, len(words_spans)) + 1):
+            span_end = words_spans[length - 1].end()
+            candidate = text[words_spans[0].start():span_end].strip()
             score = difflib.SequenceMatcher(None, ww_lower, candidate.lower()).ratio()
             if score >= min_score:
-                candidates.append((score, m.end(), ww))
-        
-        # Multi-word phrases (sliding window up to 3 words)
-        for i in range(len(words_spans)):
-            for length in range(2, min(4, len(words_spans) - i + 1)):
-                span_start = words_spans[i].start()
-                span_end = words_spans[i + length - 1].end()
-                candidate = text[span_start:span_end].strip()
-                score = difflib.SequenceMatcher(None, ww_lower, candidate.lower()).ratio()
-                if score >= min_score:
-                    candidates.append((score, span_end, ww))
+                candidates.append((score, span_end, ww))
 
     if not candidates:
         return 0,None,None
@@ -158,7 +156,8 @@ class SessionContext:
         self.Context["last_component"]=""
         self.Context["last_parameter"]=""
         self.Context["last_wwword"]=""
-        
+        self.Context["last_target"]=""
+
 
 def normalize_text(text: str) -> str:
     text = text.lower()
@@ -166,9 +165,27 @@ def normalize_text(text: str) -> str:
     return text.strip()
 
 def remove_skip_words(text: str, skip_words: List[str]) -> str:
-    words = text.split()
-    filtered = [w for w in words if w not in skip_words]
+    filtered = []
+    for w in text.split():
+        # Vosk writes an elided article attached to its noun: "l'altimetro" is "altimetro" when "l'" is a skip word
+        head, apostrophe, tail = w.partition("'")
+        if apostrophe and tail and head + apostrophe in skip_words:
+            w = tail
+        if w not in skip_words:
+            filtered.append(w)
     return ' '.join(filtered)
+
+def apply_aliases(text: str, aliases: Dict[str, str]) -> str:
+    """Rewrite what Vosk can write into the term the keywords use: "vario metro" -> "variometro".
+    Vosk only outputs words of its model vocabulary, so a term outside it ("variometro", "qnh")
+    arrives split or spelled. Whole words only, longest alias first, in a single pass.
+    A word may follow an elision: Vosk writes "l'età" as one word."""
+    text = text.lower()
+    if not aliases:
+        return text
+    spoken = sorted(aliases, key=len, reverse=True)
+    pattern = r"(?<![^\s'])(?:" + "|".join(re.escape(s) for s in spoken) + r")(?!\S)"
+    return re.sub(pattern, lambda m: aliases[m.group(0)], text)
 
 def similarity_ratio(a: str, b: str) -> float:
     score, is_match, extracted = improved_similarity(a,b,0.7)
@@ -450,7 +467,7 @@ def handle_display(context: str, component: str, action: str, parameter: str, te
     url = f"{base_url}/{path}"
     resp = requests.put(url, json={
         "source": "voice",
-        "target": ctx.Context["last_wwword"],
+        "target": ctx.Context["last_target"],
         "key": parameter,
         "status": 0,
         }, timeout=60.0)
@@ -808,8 +825,44 @@ def handle_timers(context: str, component: str, action: str, parameter: str, tex
     return ""
 
 
+# ICAO spelling alphabet, with the spellings the Vosk vocabularies use ("alpha", "juliet")
+SPELLING_ALPHABET = {
+    "alfa": "A", "alpha": "A", "bravo": "B", "charlie": "C", "delta": "D", "echo": "E", "foxtrot": "F",
+    "golf": "G", "hotel": "H", "india": "I", "juliett": "J", "juliet": "J", "juliette": "J", "kilo": "K",
+    "lima": "L", "mike": "M", "november": "N", "oscar": "O", "papa": "P", "quebec": "Q", "romeo": "R",
+    "sierra": "S", "tango": "T", "uniform": "U", "victor": "V", "whiskey": "W", "whisky": "W", "xray": "X",
+    "yankee": "Y", "zulu": "Z", "niner": "9",
+}
+# Fewer spelled symbols are ordinary words: "lima", "golf" or "hotel alfa" name no airfield code
+SPELLED_CODE_MIN = 3
+# Fields holding the codes of db.airfields.json: "LIRZ", "PG10", "IT-0003" (spelled without the dash)
+AIRFIELD_CODE_FIELDS = ("icao_code", "gps_code", "local_code", "ident")
+
+
+def spelled_code(text: str, lang: str) -> str:
+    """The longest run of spelled letters and single digits: "lima india romeo zulu" -> "LIRZ".
+    Digits are number words of the language ("papa golf zero due" -> "PG02"); a code has a letter."""
+    best = run = ""
+    for w in normalize_text(text).split():
+        symbol = SPELLING_ALPHABET.get(w)
+        if symbol is None and is_number_word(w, lang):
+            digit = int(text2num(w, lang=lang))
+            symbol = str(digit) if 0 <= digit <= 9 else None
+        run = run + symbol if symbol else ""
+        if len(run) > len(best):
+            best = run
+    if len(best) < SPELLED_CODE_MIN or best.isdigit():
+        return ""
+    return best
+
+
+def airfield_codes(airfield: dict) -> set:
+    return {re.sub(r"[^A-Z0-9]", "", str(airfield.get(k) or "").upper()) for k in AIRFIELD_CODE_FIELDS} - {""}
+
+
 def find_airfields(text: str, config: Dict) -> List[Tuple[float, dict]]:
-    """Airfields ranked by name similarity to text, best first; ties keep the database order."""
+    """Airfields ranked by name similarity to text, best first; ties keep the database order.
+    A spelled code ("lima india romeo zulu") returns only the airfields with that code."""
     comp_cfg = config['components']['airfields']
     base_url = config['base_url'].rstrip('/')
     path = comp_cfg['endpoints']['find']['path']
@@ -820,6 +873,14 @@ def find_airfields(text: str, config: Dict) -> List[Tuple[float, dict]]:
     data = resp.json()
     if not isinstance(data, list):
         return []
+
+    code = spelled_code(text, config['language'])
+    if code:
+        by_code = [a for a in data if code in airfield_codes(a)]
+        print(f"Airfield code '{code}': {len(by_code)} match(es)")
+        # A misheard code ("lima alfa foxtrot") matches nothing: no name fallback, it could pick any airfield.
+        # Same score for all: a code shared by two airfields is not a clear match for direct to
+        return [(1.0, a) for a in by_code]
 
     search_name = normalize_text(text)
     ranking = []
@@ -904,7 +965,8 @@ def handle_utterance(raw_text: str, ctx: SessionContext, config: Dict[str, Any])
         return ""
     valueHelper = ValueHelper(config)
     skip_words = config.get('skip_words', [])
-    text_without_skip = remove_skip_words(raw_text, skip_words)
+    # Aliases first: spelled acronyms use skip words ("e gi ti" is EGT, "e" is a skip word)
+    text_without_skip = remove_skip_words(apply_aliases(raw_text, config.get('aliases', {})), skip_words)
 
     wwscore, wwword, text = detect_wake_word(text_without_skip,config['wake_words'])
     if wwscore < 0.1 or wwword == None or  text == None:
@@ -944,6 +1006,9 @@ def handle_utterance(raw_text: str, ctx: SessionContext, config: Dict[str, Any])
     ctx.Context["last_component"] = component
     ctx.Context["last_parameter"] = parameter
     ctx.Context["last_wwword"] = wwword
+    # An RB-01 display named on its voice page ("primario", "secondario", "display") ignores commands
+    # whose target differs: display_targets maps a translated wake word ("primary") to that name
+    ctx.Context["last_target"] = config.get('display_targets', {}).get(wwword, wwword)
 
     print(f"{component}::{parameter}")
 

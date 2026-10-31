@@ -7,13 +7,10 @@
     "primario",
     "secondario",
     "backup",
-    "strumento",
     "rotondo",
     "ehi computer",
     "display",
-    "avionica",
-    "aeroplano",
-    "aeromobile"
+    "avionica"
   ],
   "base_url": "http://localhost",
   "answers": {
@@ -87,8 +84,51 @@
     "mi",
     "su",
     "cosa",
-    "dove"
+    "dove",
+    "dei",
+    "degli",
+    "della",
+    "delle",
+    "dello",
+    "nel",
+    "nella",
+    "nei",
+    "negli",
+    "nelle",
+    "nello",
+    "sul",
+    "sulla",
+    "sui",
+    "sugli",
+    "sulle",
+    "sullo",
+    "segna",
+    "l'",
+    "dell'",
+    "all'",
+    "dall'",
+    "nell'",
+    "sull'",
+    "un'"
   ],
+  "aliases": {
+    "vario metro": "variometro",
+    "sbando metro": "sbandometro",
+    "viro sbando metro": "virosbandometro",
+    "ci acca ti": "cht",
+    "e gi ti": "egt",
+    "erre pi emme": "rpm",
+    "o a ti": "oat",
+    "acca esse i": "hsi",
+    "e emme esse": "ems",
+    "e ti a": "eta",
+    "età": "eta",
+    "x ray": "xray",
+    "fox trot": "foxtrot",
+    "centodicotto": "centodiciotto",
+    "centoventiuno": "centoventuno",
+    "centrotrenta": "centotrenta"
+  },
   "actions": {
     "GET": [
       "sono",
@@ -108,6 +148,7 @@
       "dove",
       "dove sono",
       "dimmi",
+      "dammi",
       "descrivi"
     ],
     "SET": [
@@ -148,18 +189,20 @@
         "visualizza bussola": "heading",
         "visualizza radar": "radar",
         "visualizza variometro": "variometer",
+        "visualizza hsi": "heading",
         "mostrami altimetro": "altimeter",
         "mostrami assetto": "attitude",
-        "mostrami radar": "altimeter",
+        "mostrami radar": "radar",
         "mostrami mappa": "map",
         "mostrami motore": "ems",
-        "mostrami acrobatico": "altimeter",
+        "mostrami acrobatico": "resources",
         "mostrami sbandometro": "turnslip",
         "mostrami orizzonte": "attitude",
         "mostrami giro direzionale": "heading",
         "mostrami pallina": "turnslip",
         "mostrami bussola": "heading",
-        "mostrami variometro": "variometer"
+        "mostrami variometro": "variometer",
+        "mostrami hsi": "heading"
       },
       "endpoints": {
         "display": {
@@ -199,23 +242,23 @@
         "ampere": "amps",
         "corrente": "amps",
         "assorbimento": "amps",
-        "cht1": "cht1",
+        "cht uno": "cht1",
         "cilindro uno": "cht1",
         "primo cilindro": "cht1",
         "temperatura primo cilindro": "cht1",
-        "cht2": "cht2",
+        "cht due": "cht2",
         "secondo cilindro": "cht2",
         "temperatura secondo cilindro": "cht2",
         "cilindro due": "cht2",
-        "cht3": "cht3",
+        "cht tre": "cht3",
         "terzo cilindro": "cht3",
         "temperatura terzo cilindro": "cht3",
         "cilindro tre": "cht3",
-        "cht4": "cht4",
+        "cht quattro": "cht4",
         "cilindro quattro": "cht4",
         "quarto cilindro": "cht4",
         "temperatura quarto cilindro": "cht4",
-        "egt1": "egt1",
+        "egt uno": "egt1",
         "scarico uno": "egt1",
         "scarico due": "egt2",
         "scarico tre": "egt3",
@@ -224,19 +267,21 @@
         "secondo scarico": "egt2",
         "terzo scarico": "egt3",
         "quarto scarico": "egt4",
-        "temperaratura primo scarico": "egt1",
-        "temperaratura secondo scarico": "egt2",
-        "temperaratura terzo scarico": "egt3",
-        "temperaratura quarto scarico": "egt4",
+        "temperatura primo scarico": "egt1",
+        "temperatura secondo scarico": "egt2",
+        "temperatura terzo scarico": "egt3",
+        "temperatura quarto scarico": "egt4",
         "motore": "fullengine",
         "temperature motore": "fullengine",
         "scarichi": "egt",
         "cilindri": "cht",
         "temperature scarichi": "egt",
         "temperature cilindri": "cht",
-        "egt2": "egt2",
-        "egt3": "egt3",
-        "egt4": "egt4",
+        "temperatura scarichi": "egt",
+        "temperatura cilindri": "cht",
+        "egt due": "egt2",
+        "egt tre": "egt3",
+        "egt quattro": "egt4",
         "pressione carburante": "fuelpressure",
         "collettore": "manifoldpressure",
         "pressione collettore": "manifoldpressure",
@@ -244,7 +289,23 @@
         "temperatura olio": "oiltemperature",
         "esterna": "outsidetemperature",
         "temperatura esterna": "outsidetemperature",
-        "aria": "outsidetemperature"
+        "aria": "outsidetemperature",
+        "ems": "fullengine",
+        "cht": "cht",
+        "egt": "egt",
+        "rpm": "enginerpm",
+        "manifold": "manifoldpressure",
+        "pressione aspirazione": "manifoldpressure",
+        "oat": "outsidetemperature",
+        "voltmetro": "batteryvoltage",
+        "tensione": "batteryvoltage",
+        "amperometro": "amps",
+        "serbatoio uno": "fuel1",
+        "primo serbatoio": "fuel1",
+        "serbatoio due": "fuel2",
+        "secondo serbatoio": "fuel2",
+        "carburante primo serbatoio": "fuel1",
+        "carburante secondo serbatoio": "fuel2"
       },
       "endpoints": {
         "fullengine": {
@@ -258,7 +319,7 @@
           "path": "/getEMS",
           "method": "helper_EMS_EngineStatus",
           "json_path": "",
-          "reply_template": "La media degli scarichi sono in arco {EGTAVG} e la differenza è {EGTDIFF}, il più caldo è {CHTMAXPROBELABEL}"
+          "reply_template": "La media degli scarichi è in arco {EGTAVG} e la differenza è {EGTDIFF}, il più caldo è {EGTMAXPROBELABEL}"
         },
         "cht": {
           "path": "/getEMS",
@@ -300,7 +361,7 @@
           "path": "/getEMS",
           "method": "",
           "json_path": "amps",
-          "reply_template": "{amps} ampere"
+          "reply_template": "{amps:.0f} ampere"
         },
         "cht1": {
           "path": "/getEMS",
@@ -433,7 +494,23 @@
         "assetto": "attitude",
         "beccheggio": "AHRSPitch",
         "rollio": "AHRSRoll",
-        "prua magnetometro": "AHRSMagHeading"
+        "prua magnetometro": "AHRSMagHeading",
+        "heading": "AHRSMagHeading",
+        "prua magnetica": "AHRSMagHeading",
+        "quota": "GPSAltitudeMSL",
+        "livello volo": "BaroPressureAltitude",
+        "flight level": "BaroPressureAltitude",
+        "vario": "BaroVerticalSpeed",
+        "rateo salita": "BaroVerticalSpeed",
+        "rateo discesa": "BaroVerticalSpeed",
+        "rateo virata": "AHRSTurnRate",
+        "virosbandometro": "AHRSTurnRate",
+        "ground speed": "GPSGroundSpeed",
+        "pitch": "AHRSPitch",
+        "bank": "AHRSRoll",
+        "inclinazione": "AHRSRoll",
+        "fattore carico": "AHRSGLoad",
+        "accelerometro": "AHRSGLoad"
       },
       "endpoints": {
         "attitude": {
@@ -524,7 +601,7 @@
           "path": "/getSituation",
           "method": "",
           "json_path": "BaroPressureAltitude",
-          "reply_template": "{BaroPressureAltitude:.0f}"
+          "reply_template": "Altitudine pressione {BaroPressureAltitude:.0f} piedi"
         },
         "BaroHumidity": {
           "path": "/getSituation",
@@ -572,7 +649,7 @@
           "path": "/getSituation",
           "method": "",
           "json_path": "AHRSSlipSkid",
-          "reply_template": "Spostato di {AHRSSlipSkid} gradi"
+          "reply_template": "Spostato di {AHRSSlipSkid:.1f} gradi"
         },
         "AHRSTurnRate": {
           "path": "/getSituation",
@@ -608,7 +685,13 @@
         "distanza": "destination",
         "manca": "destination",
         "tempo": "destination",
-        "autopilota": "destination"
+        "autopilota": "destination",
+        "pilota automatico": "destination",
+        "diretto": "destination",
+        "direct to": "destination",
+        "waypoint": "destination",
+        "eta": "destination",
+        "rilevamento": "destination"
       },
       "endpoints": {
         "destination": {
@@ -653,13 +736,14 @@
           "path": "/settings/db.airfields.json",
           "method": "",
           "json_path": "",
-          "reply_template": "Trovato {name}, altitudine {Ele} piedi, frequenza radio: {freq}, dista {POIDISTANCE:.1f} direzione {POIBEARING:.0f} gradi"
+          "reply_template": "Trovato {name}, altitudine {Ele} piedi, frequenza radio: {freq}, dista {POIDISTANCE:.1f} chilometri, direzione {POIBEARING:.0f} gradi"
         }
       }
     },
     "timers": {
       "keywords": {
-        "timer": "timer"
+        "timer": "timer",
+        "cronometro": "timer"
       },
       "endpoints": {
         "timer": {

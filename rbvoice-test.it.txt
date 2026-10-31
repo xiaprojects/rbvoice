@@ -1,0 +1,78 @@
+# Voice test phrases for rbvoice-cases.it.json: "phrase | component | parameter"
+# An optional 4th column is the value the handler gets: radio frequency or spelled airfield code.
+# Written as a pilot says them, so the list works for Piper and read aloud in the cockpit.
+# Acronyms read letter by letter use the Italian letter names ("ci acca ti" is CHT). With the big
+# model they are unreliable (it prefers real words: "e gi ti" -> "reggiti"); the Italian phrase
+# for the same reading follows each group.
+#   python3 voicetest.py rbvoice-cases.it.json --phrases rbvoice-test.it.txt [--model <vosk model> --piper <voice.onnx>]
+
+# Motore
+computer dimmi ci acca ti | ems | cht
+computer dimmi ci acca ti uno | ems | cht1
+computer dimmi ci acca ti tre | ems | cht3
+computer quanto è e gi ti due | ems | egt2
+computer dimmi e gi ti | ems | egt
+computer dimmi la temperatura del primo scarico | ems | egt1
+computer quanti erre pi emme | ems | enginerpm
+computer dimmi i giri motore | ems | enginerpm
+computer quanto è il manifold | ems | manifoldpressure
+computer dimmi la pressione di aspirazione | ems | manifoldpressure
+computer dimmi o a ti | ems | outsidetemperature
+computer quanto segna il voltmetro | ems | batteryvoltage
+computer quanto segna l'amperometro | ems | amps
+computer dimmi il serbatoio uno | ems | fuel1
+computer quanto carburante nel secondo serbatoio | ems | fuel2
+computer dimmi e emme esse | ems | fullengine
+computer dimmi la temperatura dell'olio | ems | oiltemperature
+computer dimmi la temperatura esterna | ems | outsidetemperature
+computer dimmi le temperature dei cilindri | ems | cht
+computer dimmi le temperature degli scarichi | ems | egt
+
+# Volo
+computer dimmi heading | situation | AHRSMagHeading
+computer qual è la prua magnetica | situation | AHRSMagHeading
+computer dimmi la quota | situation | GPSAltitudeMSL
+computer dimmi l'altitudine | situation | GPSAltitudeMSL
+computer dimmi il livello di volo | situation | BaroPressureAltitude
+computer dimmi il flight level | situation | BaroPressureAltitude
+computer dimmi l'altimetro | situation | BaroPressureAltitude
+computer quanto segna il variometro | situation | BaroVerticalSpeed
+computer quanto è il rateo di salita | situation | BaroVerticalSpeed
+computer dimmi il rateo di virata | situation | AHRSTurnRate
+computer quanto segna lo sbandometro | situation | AHRSSlipSkid
+computer dimmi la ground speed | situation | GPSGroundSpeed
+computer dimmi il pitch | situation | AHRSPitch
+computer dimmi il bank | situation | AHRSRoll
+computer dimmi l'inclinazione | situation | AHRSRoll
+computer dimmi il fattore di carico | situation | AHRSGLoad
+computer che ore sono | situation | GPSTime
+
+# Autopilota
+computer dimmi l'eta | autopilot | destination
+computer dimmi e ti a | autopilot | destination
+computer qual è il prossimo waypoint | autopilot | destination
+computer dimmi il rilevamento | autopilot | destination
+computer quanto manca all'arrivo | autopilot | destination
+computer imposta diretto perugia | autopilot | destination
+computer imposta destinazione perugia | autopilot | destination
+computer imposta destinazione lima india romeo zulu | autopilot | destination | LIRZ
+computer imposta destinazione lima india alfa foxtrot | autopilot | destination | LIAF
+computer imposta destinazione papa golf zero due | autopilot | destination | PG02
+computer imposta destinazione india tango zero zero zero tre | autopilot | destination | IT0003
+computer stop pilota automatico | autopilot | destination
+
+# Radio: the frequency is the value the radio gets
+computer imposta frequenza radio centodiciannove punto cinquecentocinquantacinque | radio | radio | 119.555
+computer imposta frequenza radio centoventitré virgola quattro | radio | radio | 123.400
+computer imposta frequenza radio centotrentadue e cinquanta | radio | radio | 132.500
+computer imposta frequenza radio uno uno otto punto uno | radio | radio | 118.100
+computer imposta frequenza radio centoventisei decimale sette cinque zero | radio | radio | 126.750
+
+# Aeroporti, radio, traffico, timer, display
+computer trova aeroporto lima india romeo zulu | airfields | find | LIRZ
+computer imposta frequenza radio centodiciotto punto cinque | radio | radio | 118.500
+computer imposta frequenza radio perugia approach | radio | radio
+computer quanti traffici | traffic | traffic
+computer avvia il cronometro | timers | timer
+computer visualizza acca esse i | display | heading
+computer visualizza la bussola | display | heading

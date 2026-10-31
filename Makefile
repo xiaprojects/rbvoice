@@ -30,6 +30,9 @@ install:
 	test -f /boot/firmware/rb/rbvoice-aircraft-rules.json || cp -f rbvoice-aircraft-rules.json /boot/firmware/rb
 	test -f /boot/firmware/rb/rbvoice-cases.it.json || cp -f rbvoice-cases.it.json /boot/firmware/rb
 	test -f /boot/firmware/rb/rbvoice-cases.fr.json || cp -f rbvoice-cases.fr.json /boot/firmware/rb
+	test -f /boot/firmware/rb/rbvoice-cases.en.json || cp -f rbvoice-cases.en.json /boot/firmware/rb
+	test -f /boot/firmware/rb/rbvoice-cases.es.json || cp -f rbvoice-cases.es.json /boot/firmware/rb
+	test -f /boot/firmware/rb/rbvoice-cases.de.json || cp -f rbvoice-cases.de.json /boot/firmware/rb
 	chmod 755 $(VENV_DIR)/bin/*.sh
 	cp rbvoice.service /lib/systemd/system
 	systemctl daemon-reload
@@ -65,4 +68,4 @@ install-dependencies-android:
 	apt -y install pipewire
 
 install-asoundrc:
-	cp asoundrc $HOME/.asoundrc
+	cp asoundrc $$HOME/.asoundrc

@@ -1,0 +1,647 @@
+{
+  "language": "en",
+  "display_targets": {
+    "primary": "primario",
+    "secondary": "secondario",
+    "display": "display"
+  },
+  "wake_words": [
+    "computer",
+    "hey computer",
+    "primary",
+    "secondary",
+    "backup",
+    "round",
+    "display",
+    "avionics"
+  ],
+  "base_url": "http://localhost",
+  "answers": {
+    "startup": "the system is ready",
+    "egt1": "exhaust one",
+    "egt2": "exhaust two",
+    "egt3": "exhaust three",
+    "egt4": "exhaust four",
+    "cht1": "cylinder one",
+    "cht2": "cylinder two",
+    "cht3": "cylinder three",
+    "cht4": "cylinder four",
+    "OFF": "off",
+    "GREEN": "green",
+    "YELLOW": "yellow",
+    "RED": "red",
+    "stop": "stop",
+    "cancel": "cancel",
+    "delete": "delete",
+    "and": "and",
+    "seconds": "seconds",
+    "minutes": "minutes",
+    "started": "running",
+    "stopped": "stopped",
+    "didnotget": "please ask me in a different way",
+    "didnotfindairfield": "I could not find what you asked for, try again with a different search term",
+    "trafficNone": "No traffic reported",
+    "trafficAbove": "above you",
+    "trafficBelow": "below you",
+    "trafficClock": "at your",
+    "autopilotNone": "no destination set",
+    "autopilotNoGps": "GPS position not available",
+    "autopilotError": "autopilot not available",
+    "radioNotFound": "I did not understand the frequency, tell me the number or the station name"
+  },
+  "numbers": {
+    "main_words": [
+      "point",
+      "decimal",
+      "dot"
+    ],
+    "max_digits_before": 3,
+    "max_digits_after": 3
+  },
+  "skip_words": [
+    "the",
+    "a",
+    "an",
+    "of",
+    "in",
+    "on",
+    "at",
+    "to",
+    "for",
+    "with",
+    "my",
+    "our",
+    "is",
+    "are",
+    "we",
+    "me",
+    "please",
+    "and"
+  ],
+  "aliases": {},
+  "actions": {
+    "GET": [
+      "what is",
+      "what's",
+      "which",
+      "find",
+      "what are",
+      "trend",
+      "how",
+      "how much",
+      "status",
+      "how many",
+      "where",
+      "where are",
+      "tell me",
+      "describe",
+      "give me"
+    ],
+    "SET": [
+      "set",
+      "start",
+      "engage",
+      "insert",
+      "configure",
+      "tune",
+      "take me to",
+      "go to"
+    ],
+    "DEL": [
+      "delete",
+      "stop",
+      "remove",
+      "cancel",
+      "disengage"
+    ]
+  },
+  "defaults": {
+    "action": "GET"
+  },
+  "components": {
+    "display": {
+      "keywords": {
+        "show altimeter": "altimeter",
+        "show turn coordinator": "turnslip",
+        "show horizon": "attitude",
+        "show attitude": "attitude",
+        "show g meter": "gmeter",
+        "show engine": "ems",
+        "show map": "map",
+        "show aerobatic": "resources",
+        "show directional gyro": "heading",
+        "show ball": "turnslip",
+        "show compass": "heading",
+        "show radar": "radar",
+        "show variometer": "variometer"
+      },
+      "endpoints": {
+        "display": {
+          "path": "/remote/voice",
+          "method": "",
+          "json_path": "",
+          "reply_template": "{last_wwword} shows {last_parameter}"
+        }
+      }
+    },
+    "traffic": {
+      "keywords": {
+        "traffic": "traffic",
+        "nearby traffic": "traffic",
+        "traffic around": "traffic",
+        "traffic nearby": "traffic"
+      },
+      "endpoints": {
+        "traffic": {
+          "path": "/getTraffic",
+          "method": "",
+          "json_path": "",
+          "reply_template": "{TrafficCount} traffic reported, the nearest is {TrafficLocation} o'clock, {TrafficDistance:.0f} kilometers away"
+        }
+      }
+    },
+    "ems": {
+      "keywords": {
+        "battery": "batteryvoltage",
+        "voltage": "batteryvoltage",
+        "alternator": "alternatorout",
+        "rpm": "enginerpm",
+        "revolutions per minute": "enginerpm",
+        "fuel": "fuelremaining",
+        "fuel remaining": "fuelremaining",
+        "oil pressure": "oilpressure",
+        "amps": "amps",
+        "current": "amps",
+        "amperage": "amps",
+        "cht1": "cht1",
+        "cylinder one": "cht1",
+        "first cylinder": "cht1",
+        "first cylinder temperature": "cht1",
+        "cht2": "cht2",
+        "second cylinder": "cht2",
+        "second cylinder temperature": "cht2",
+        "cylinder two": "cht2",
+        "cht3": "cht3",
+        "third cylinder": "cht3",
+        "third cylinder temperature": "cht3",
+        "cylinder three": "cht3",
+        "cht4": "cht4",
+        "cylinder four": "cht4",
+        "fourth cylinder": "cht4",
+        "fourth cylinder temperature": "cht4",
+        "egt1": "egt1",
+        "exhaust one": "egt1",
+        "exhaust two": "egt2",
+        "exhaust three": "egt3",
+        "exhaust four": "egt4",
+        "first exhaust": "egt1",
+        "second exhaust": "egt2",
+        "third exhaust": "egt3",
+        "fourth exhaust": "egt4",
+        "first exhaust temperature": "egt1",
+        "second exhaust temperature": "egt2",
+        "third exhaust temperature": "egt3",
+        "fourth exhaust temperature": "egt4",
+        "engine": "fullengine",
+        "engine temperatures": "fullengine",
+        "exhausts": "egt",
+        "cylinders": "cht",
+        "exhaust temperatures": "egt",
+        "cylinder temperatures": "cht",
+        "egt2": "egt2",
+        "egt3": "egt3",
+        "egt4": "egt4",
+        "fuel pressure": "fuelpressure",
+        "manifold": "manifoldpressure",
+        "manifold pressure": "manifoldpressure",
+        "oil": "oiltemperature",
+        "oil temperature": "oiltemperature",
+        "outside": "outsidetemperature",
+        "outside temperature": "outsidetemperature",
+        "outside air": "outsidetemperature"
+      },
+      "endpoints": {
+        "fullengine": {
+          "path": "/getEMS",
+          "method": "helper_EMS_EngineStatus",
+          "json_path": "",
+          "reply_template": "Oil in the {OILAVG} arc. Engine RPM {enginerpm:.0f}. Cylinders in the {CHTAVG} arc. Exhausts in the {EGTAVG} arc."
+        },
+        "egt": {
+          "path": "/getEMS",
+          "method": "helper_EMS_EngineStatus",
+          "json_path": "",
+          "reply_template": "Exhaust average in the {EGTAVG} arc and the spread is {EGTDIFF}, the hottest is {EGTMAXPROBELABEL}"
+        },
+        "cht": {
+          "path": "/getEMS",
+          "method": "helper_EMS_EngineStatus",
+          "json_path": "",
+          "reply_template": "Cylinder average in the {CHTAVG} arc and the spread is {CHTDIFF}, the hottest is {CHTMAXPROBELABEL}, the coldest is in the {CHTMIN} arc and is {CHTMINPROBELABEL}"
+        },
+        "batteryvoltage": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "batteryvoltage",
+          "reply_template": "Battery voltage {batteryvoltage:.0f} volts"
+        },
+        "alternatorout": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "alternatorout",
+          "reply_template": "Alternator at {alternatorout:.0f} amps"
+        },
+        "enginerpm": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "enginerpm",
+          "reply_template": "Engine RPM {enginerpm:.0f}"
+        },
+        "fuelremaining": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "fuelremaining",
+          "reply_template": "Fuel remaining {fuelremaining:.0f} liters"
+        },
+        "oilpressure": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "oilpressure",
+          "reply_template": "Oil pressure {oilpressure:.0f} PSI"
+        },
+        "amps": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "amps",
+          "reply_template": "{amps:.0f} amps"
+        },
+        "cht1": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "cht1",
+          "reply_template": "Cylinder one {cht1:.0f} degrees"
+        },
+        "cht2": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "cht2",
+          "reply_template": "Cylinder two {cht2:.0f} degrees"
+        },
+        "cht3": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "cht3",
+          "reply_template": "Cylinder three {cht3:.0f} degrees"
+        },
+        "cht4": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "cht4",
+          "reply_template": "Cylinder four {cht4:.0f} degrees"
+        },
+        "egt1": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "egt1",
+          "reply_template": "Exhaust one {egt1:.0f} degrees"
+        },
+        "egt2": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "egt2",
+          "reply_template": "Exhaust two {egt2:.0f} degrees"
+        },
+        "egt3": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "egt3",
+          "reply_template": "Exhaust three {egt3:.0f} degrees"
+        },
+        "egt4": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "egt4",
+          "reply_template": "Exhaust four {egt4:.0f} degrees"
+        },
+        "fuel": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "fuel",
+          "reply_template": "{fuel:.0f} liters remaining"
+        },
+        "fuel1": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "fuel1",
+          "reply_template": "{fuel1:.0f} liters remaining"
+        },
+        "fuel2": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "fuel2",
+          "reply_template": "{fuel2:.0f} liters remaining"
+        },
+        "fuelpressure": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "fuelpressure",
+          "reply_template": "Fuel pressure {fuelpressure:.0f} PSI"
+        },
+        "manifoldpressure": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "manifoldpressure",
+          "reply_template": "Manifold pressure {manifoldpressure:.0f} PSI"
+        },
+        "oiltemperature": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "oiltemperature",
+          "reply_template": "Oil temperature {oiltemperature:.0f} degrees"
+        },
+        "outsidetemperature": {
+          "path": "/getEMS",
+          "method": "",
+          "json_path": "outsidetemperature",
+          "reply_template": "Outside air temperature {outsidetemperature:.0f} degrees"
+        }
+      }
+    },
+    "situation": {
+      "keywords": {
+        "clock": "GPSTime",
+        "magnetic": "AHRSMagHeading",
+        "heading": "AHRSMagHeading",
+        "gps": "GPSAltitudeMSL",
+        "altitude": "GPSAltitudeMSL",
+        "satellites": "GPSSatellites",
+        "latitude": "GPSLatitude",
+        "longitude": "GPSLongitude",
+        "gps track": "GPSTrueCourse",
+        "track": "GPSTrueCourse",
+        "true course": "GPSTrueCourse",
+        "ground speed": "GPSGroundSpeed",
+        "groundspeed": "GPSGroundSpeed",
+        "pressure altitude": "BaroPressureAltitude",
+        "vertical speed": "GPSVerticalSpeed",
+        "climb rate": "GPSVerticalSpeed",
+        "variometer": "BaroVerticalSpeed",
+        "zulu time": "GPSTime",
+        "gps time": "GPSTime",
+        "ball": "AHRSSlipSkid",
+        "turn coordinator": "AHRSSlipSkid",
+        "slip": "AHRSSlipSkid",
+        "skid": "AHRSSlipSkid",
+        "sideslip": "AHRSSlipSkid",
+        "coordination": "AHRSSlipSkid",
+        "turn": "AHRSTurnRate",
+        "turn rate": "AHRSTurnRate",
+        "g load": "AHRSGLoad",
+        "g meter max": "AHRSGLoadMax",
+        "g meter negative": "AHRSGLoadMin",
+        "g meter min": "AHRSGLoadMin",
+        "altimeter": "BaroPressureAltitude",
+        "barometer": "BaroPressureAltitude",
+        "attitude": "attitude",
+        "pitch": "AHRSPitch",
+        "roll": "AHRSRoll",
+        "magnetometer heading": "AHRSMagHeading",
+        "utc time": "GPSTime"
+      },
+      "endpoints": {
+        "attitude": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "",
+          "reply_template": "Aircraft attitude {AHRSPitch:.0f} degrees pitch and {AHRSRoll:.0f} degrees roll"
+        },
+        "AHRSMagHeading": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "AHRSMagHeading",
+          "reply_template": "Magnetic heading {AHRSMagHeading:.0f} degrees"
+        },
+        "GPSAltitudeMSL": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "GPSAltitudeMSL",
+          "reply_template": "GPS altitude {GPSAltitudeMSL:.0f} feet"
+        },
+        "GPSSatellites": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "GPSSatellites",
+          "reply_template": "Satellites available {GPSSatellites}"
+        },
+        "GPSLatitude": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "GPSLatitude",
+          "reply_template": "Latitude {GPSLatitude:.2f}"
+        },
+        "GPSLongitude": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "GPSLongitude",
+          "reply_template": "Longitude {GPSLongitude:.2f}"
+        },
+        "GPSFixQuality": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "GPSFixQuality",
+          "reply_template": "GPS fix quality {GPSFixQuality}"
+        },
+        "GPSVerticalSpeed": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "GPSVerticalSpeed",
+          "reply_template": "GPS vertical speed {GPSVerticalSpeed:.0f} feet per minute"
+        },
+        "GPSTrueCourse": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "GPSTrueCourse",
+          "reply_template": "GPS true track {GPSTrueCourse:.0f} degrees"
+        },
+        "GPSTurnRate": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "GPSTurnRate",
+          "reply_template": "Turn rate {GPSTurnRate:.0f} degrees per second"
+        },
+        "GPSGroundSpeed": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "GPSGroundSpeed",
+          "reply_template": "GPS ground speed {GPSGroundSpeed:.0f} knots"
+        },
+        "GPSLastGroundTrackTime": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "GPSLastGroundTrackTime",
+          "reply_template": "{GPSLastGroundTrackTime}"
+        },
+        "GPSTime": {
+          "path": "/getSituation",
+          "method": "helper_GPSTime",
+          "json_path": "GPSTime",
+          "reply_template": "GPS time {GPSTime}"
+        },
+        "BaroTemperature": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "BaroTemperature",
+          "reply_template": "{BaroTemperature:.1f}"
+        },
+        "BaroPressureAltitude": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "BaroPressureAltitude",
+          "reply_template": "Pressure altitude {BaroPressureAltitude:.0f} feet"
+        },
+        "BaroHumidity": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "BaroHumidity",
+          "reply_template": "{BaroHumidity:.0f}"
+        },
+        "BaroPpm": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "BaroPpm",
+          "reply_template": "{BaroPpm:.0f}"
+        },
+        "BaroGasResistance": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "BaroGasResistance",
+          "reply_template": "{BaroGasResistance:.0f}"
+        },
+        "BaroVerticalSpeed": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "BaroVerticalSpeed",
+          "reply_template": "Variometer {BaroVerticalSpeed:.0f} feet per minute"
+        },
+        "AHRSPitch": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "AHRSPitch",
+          "reply_template": "Pitch {AHRSPitch:.0f} degrees"
+        },
+        "AHRSRoll": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "AHRSRoll",
+          "reply_template": "Roll {AHRSRoll:.0f} degrees"
+        },
+        "AHRSGyroHeading": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "AHRSGyroHeading",
+          "reply_template": "Gyro heading {AHRSGyroHeading:.0f} degrees"
+        },
+        "AHRSSlipSkid": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "AHRSSlipSkid",
+          "reply_template": "Slip {AHRSSlipSkid:.1f} degrees"
+        },
+        "AHRSTurnRate": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "AHRSTurnRate",
+          "reply_template": "Turn rate {AHRSTurnRate:.0f} degrees per second"
+        },
+        "AHRSGLoad": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "AHRSGLoad",
+          "reply_template": "G load {AHRSGLoad:.1f} G"
+        },
+        "AHRSGLoadMin": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "AHRSGLoadMin",
+          "reply_template": "Minimum load {AHRSGLoadMin:.1f} G"
+        },
+        "AHRSGLoadMax": {
+          "path": "/getSituation",
+          "method": "",
+          "json_path": "AHRSGLoadMax",
+          "reply_template": "Maximum load {AHRSGLoadMax:.1f} G"
+        }
+      }
+    },
+    "autopilot": {
+      "keywords": {
+        "destination": "destination",
+        "arrival": "destination",
+        "final": "destination",
+        "distance": "destination",
+        "time to destination": "destination",
+        "autopilot": "destination"
+      },
+      "endpoints": {
+        "destination": {
+          "path": "/autopilot",
+          "method": "",
+          "json_path": "",
+          "reply_template": "To reach {DestinationName} you still need {MinutesToDestination:.0f} minutes and {NMToDestination:.0f} nautical miles",
+          "reply_template_stationary": "{DestinationName} is {NMToDestination:.0f} nautical miles away, bearing {BearingToDestination:.0f} degrees",
+          "reply_template_set": "Direct to {DestinationName}, {NMToDestination:.0f} nautical miles, bearing {BearingToDestination:.0f} degrees",
+          "reply_template_stop": "Autopilot disengaged"
+        }
+      }
+    },
+    "radio": {
+      "keywords": {
+        "radio frequency": "radio",
+        "frequency": "radio"
+      },
+      "endpoints": {
+        "radio": {
+          "path": "/radio",
+          "frequencies_path": "/settings/db.frequencies.json",
+          "method": "",
+          "json_path": "",
+          "reply_template": "Frequency {FrequencyStandby} {LabelStandby} set"
+        }
+      }
+    },
+    "airfields": {
+      "keywords": {
+        "find": "find",
+        "search": "find",
+        "search for": "find",
+        "airstrip": "find",
+        "airport": "find",
+        "runway": "find",
+        "airfield": "find",
+        "radio": "find"
+      },
+      "endpoints": {
+        "find": {
+          "path": "/settings/db.airfields.json",
+          "method": "",
+          "json_path": "",
+          "reply_template": "Found {name}, elevation {Ele} feet, radio frequency {freq}, {POIDISTANCE:.1f} kilometers away, bearing {POIBEARING:.0f} degrees"
+        }
+      }
+    },
+    "timers": {
+      "keywords": {
+        "timer": "timer",
+        "stopwatch": "timer"
+      },
+      "endpoints": {
+        "timer": {
+          "path": "/timers",
+          "method": "",
+          "json_path": "",
+          "reply_template": "Timer {timer name} is {timer status}, {timer count}"
+        }
+      }
+    }
+  }
+}

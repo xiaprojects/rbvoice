@@ -11,7 +11,7 @@ import requests
 import math
 from datetime import datetime
 from vosk import Model, KaldiRecognizer, SetLogLevel
-from assistant import handle_utterance,SessionContext,CONFIG,ctx
+from assistant import handle_utterance,SessionContext,CONFIG,ctx,SPELLING_ALPHABET
 import traceback
 import struct
 from array import array
@@ -156,6 +156,15 @@ def extractCommandsFromConfig(CONFIG, commands):
                     if isinstance(item, str):
                         commands.append(item)
     
+    # aliases: keys, the words Vosk writes for a term outside its vocabulary ("vario metro")
+    if 'aliases' in CONFIG:
+        for k in CONFIG['aliases'].keys():
+            if isinstance(k, str):
+                commands.append(k)
+
+    # ICAO spelling alphabet, for airfield codes ("lima india romeo zulu")
+    commands.extend(SPELLING_ALPHABET.keys())
+
     # components.*.keywords: all keys (user phrases)
     if 'components' in CONFIG:
         for comp_name, comp_data in CONFIG['components'].items():
@@ -167,6 +176,17 @@ def extractCommandsFromConfig(CONFIG, commands):
                             commands.append(k)
 
     return commands
+
+
+def buildGrammar(CONFIG, rbdir="/boot/firmware/rb"):
+    """The Vosk grammar as a JSON list: case-file phrases, airfield and frequency names."""
+    commands = extractCommandsFromConfig(CONFIG, [])
+    airfields = os.path.join(rbdir, "db.airfields.json")
+    if os.path.isfile(airfields):
+        commands = extractCommandsFromAirfieldsOffline(airfields, commands)
+    commands = extractCommandsFromFrequenciesOffline(os.path.join(rbdir, "db.frequencies.json"), commands)
+    # Vosk does not decode \u escapes: an escaped "velocità" would be dropped as missing from the vocabulary
+    return json.dumps(commands, ensure_ascii=False)
 
 
 def rms16le(pcm_bytes: bytes) -> float:
@@ -328,7 +348,7 @@ def _voice_event_worker():
                 url,
                 json={
                     "source": "voice",
-                    "target": ctx.Context["last_wwword"],
+                    "target": ctx.Context["last_target"],
                     "key": event,
                     "in": input_text,
                     "out": output_text,
@@ -403,13 +423,9 @@ def startVR():
 
 
 
-    supportedGrammar = []
-    supportedGrammar = extractCommandsFromConfig(CONFIG,supportedGrammar)
-    print(f"{supportedGrammar}")
     #supportedGrammar = extractCommandsFromAirfields(CONFIG,supportedGrammar)
-    supportedGrammar = extractCommandsFromAirfieldsOffline("/boot/firmware/rb/db.airfields.json",supportedGrammar)
-    supportedGrammar = extractCommandsFromFrequenciesOffline("/boot/firmware/rb/db.frequencies.json",supportedGrammar)
-    stringOfCommands = json.dumps(supportedGrammar)
+    stringOfCommands = buildGrammar(CONFIG)
+    print(stringOfCommands)
     #rec.SetWords(True)
     rec = KaldiRecognizer(model, SAMPLE_RATE_RECORDING, stringOfCommands)
     #rec.SetGrammar(stringOfCommands)
