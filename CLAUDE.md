@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Offline voice assistant for RB-Avionics instruments (RB-01 / RB-03 / RB-06) running on a Raspberry Pi with Stratux. Pilot speech → Vosk STT → keyword/fuzzy NLU → HTTP calls to the local Stratux/RB API → spoken reply through Piper TTS. All recognition and synthesis run on-device; there is no LLM in the loop.
 
-There is no build step, test suite, or linter. The code only runs end to end on the target device (it needs audio hardware, `/boot/firmware/rb/*` and a reachable Stratux server).
+There is no build step or linter. The code only runs end to end on the target device (it needs audio hardware, `/boot/firmware/rb/*` and a reachable Stratux server). The pytest suite in `tests/` covers the NLU, the handlers and the case files without any of that.
 
 ## Commands
 
@@ -27,7 +27,26 @@ systemctl restart rbvoice      # unit runs /opt/rbvoice/bin/rbvoice.sh as user p
 journalctl -u rbvoice -f       # all output goes to syslog; the code logs via print()
 ```
 
-Offline checks that work on a dev machine:
+Tests, on a dev machine (CI runs the same in `.github/workflows/ci.yml`, on Python 3.11):
+
+```bash
+pip install pytest text2num requests
+python3 -m pytest tests                     # unit, case-file and integration tests, a few seconds
+python3 ci/fetch_vocab.py vosk-model-it-0.22 <dir>   # only graph/words.txt, by HTTP range requests
+```
+
+- `tests/test_unit.py` covers the pure functions: frequencies, spelled codes, wake words, aliases, skip words and the engine rules.
+- `tests/test_cases.py` runs the case-file checklist below on every language. Breaches that are already in the files are listed in `KNOWN_SKIP_TRIGGERS` / `KNOWN_SKIP_IN_KEYWORDS`. A test fails on a new breach, and also on a fixed one still listed, so the lists only shrink.
+- `tests/test_integration.py` calls `handle_utterance` against the fake RB-01 in `tests/conftest.py`:
+  - every `rbvoice-test.<lang>.txt` phrase must route as expected and get an answer;
+  - the radio, autopilot, timer and display writes must match what the HMI sends;
+  - every endpoint in every language must render its reply, both parked and flying.
+
+  The fake serves `tests/fixtures/rb01.json`, trimmed from a real RB-01 capture (roastbeef `test/display/fixtures/rb01-device.json`) plus airfields around Perugia. Like Go's ServeMux, it answers `//path` with a 307. A known defect is a strict `xfail`: it fails CI once fixed, until the marker is removed.
+
+The CI vocabulary job reads each language's Vosk model from the `rbvoice.sh` blocks and runs `vocab_check.py` on it. Problems fail the job for Italian and are warnings for the other languages.
+
+Other offline checks:
 
 ```bash
 python3 -m py_compile assistant.py rbvoice.py RuleEvaluator.py vocab_check.py voicetest.py
