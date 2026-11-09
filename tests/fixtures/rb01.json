@@ -1,0 +1,472 @@
+{
+ "/getEMS": {
+  "alternatorout": 0,
+  "amps": 0,
+  "batteryvoltage": 0,
+  "cht1": 34.585938,
+  "cht2": 34.132812,
+  "cht3": 0,
+  "cht4": 33.265625,
+  "coolanttemperature": 0,
+  "egt1": 40.2225,
+  "egt2": 39.2925,
+  "egt3": 37.8975,
+  "egt4": 0,
+  "enginerpm": 0,
+  "fuel": 0,
+  "fuel1": 0,
+  "fuel2": 0,
+  "fuelpressure": 0,
+  "fuelremaining": 0,
+  "manifoldpressure": 0,
+  "oilpressure": 0,
+  "oiltemperature": 127.5,
+  "outsidetemperature": 27.870937
+ },
+ "/getSituation": {
+  "AHRSAccX": 0.12869999999999998,
+  "AHRSAccY": -0.0897,
+  "AHRSAccZ": 0.8696999999999999,
+  "AHRSGLoad": 0.825473084389337,
+  "AHRSGLoadMax": 0.8275680732207764,
+  "AHRSGLoadMin": 0.8217336437578623,
+  "AHRSGyroHeading": 3276.7,
+  "AHRSGyroX": -6.191304347826087,
+  "AHRSGyroY": -0.9043478260869565,
+  "AHRSGyroZ": -0.34782608695652173,
+  "AHRSLastAttitudeTime": "0001-01-01T00:08:44.76Z",
+  "AHRSMagHeading": 0.3878812575394565,
+  "AHRSPitch": 5.170942192775191,
+  "AHRSRoll": 5.0578581542239665,
+  "AHRSSlipSkid": -5.305149716468503,
+  "AHRSStatus": 7,
+  "AHRSTemperature": 0,
+  "AHRSTurnRate": 3276.7,
+  "BaroGasResistance": 0,
+  "BaroHumidity": 0,
+  "BaroLastMeasurementTime": "0001-01-01T00:08:44.71Z",
+  "BaroPpm": 0,
+  "BaroPressureAltitude": 546.2417,
+  "BaroSourceType": 1,
+  "BaroTemperature": 35.11,
+  "BaroVerticalSpeed": -1.5429937,
+  "GPSAltitudeMSL": 762.7953,
+  "GPSFixQuality": 2,
+  "GPSGeoidSep": 145.01314,
+  "GPSGroundSpeed": 0.15600000321865082,
+  "GPSHeightAboveEllipsoid": 907.8084,
+  "GPSHorizontalAccuracy": 2.376973,
+  "GPSLastAccuracyTime": "0001-01-01T00:08:44.79Z",
+  "GPSLastFixLocalTime": "0001-01-01T00:08:44.78Z",
+  "GPSLastFixSinceMidnightUTC": 63001.6,
+  "GPSLastGPSTimeStratuxTime": "0001-01-01T00:08:44.77Z",
+  "GPSLastGroundTrackTime": "0001-01-01T00:08:44.77Z",
+  "GPSLatitude": 43.104656,
+  "GPSLongitude": 12.2511215,
+  "GPSNACp": 11,
+  "GPSPositionSampleRate": 10.001048767697954,
+  "GPSSatellites": 14,
+  "GPSSatellitesSeen": 17,
+  "GPSSatellitesTracked": 25,
+  "GPSTime": "2026-09-12T17:30:01.68Z",
+  "GPSTrueCourse": 0,
+  "GPSTurnRate": 0,
+  "GPSVerticalAccuracy": 2.8,
+  "GPSVerticalSpeed": 0
+ },
+ "/getTraffic": [
+  {
+   "Icao_addr": 5055312,
+   "Tail": "RYR465X",
+   "Lat": 42.662663,
+   "Lng": 12.300152,
+   "Alt": 34000,
+   "Track": 325,
+   "Speed": 424,
+   "Position_valid": true,
+   "OnGround": false
+  }
+ ],
+ "/radio": [
+  {
+   "Driver": "SERIAL",
+   "Dual": true,
+   "Enabled": true,
+   "FrequencyActive": "130.000",
+   "FrequencyStandby": "119.555",
+   "LabelActive": "130Mhz Mountain",
+   "LabelStandby": "Foligno Airfield",
+   "Name": "KRT2",
+   "Path": "/dev/radio0",
+   "SquelchLevel": 0,
+   "VolumeLevel": 0
+  }
+ ],
+ "/timers": [
+  {
+   "CountDown": 1200,
+   "Epoch": 0,
+   "Fired": false,
+   "Status": false
+  },
+  {
+   "CountDown": 1200,
+   "Epoch": 0,
+   "Fired": false,
+   "Status": false
+  },
+  {
+   "CountDown": 0,
+   "Epoch": 0,
+   "Fired": false,
+   "Status": false
+  },
+  {
+   "CountDown": 0,
+   "Epoch": 0,
+   "Fired": false,
+   "Status": false
+  }
+ ],
+ "/settings/db.airfields.json": [
+  {
+   "type": "small_airport",
+   "name": "San Sepolcro Airfield",
+   "gps_code": "IT-0003",
+   "freq": "",
+   "Lat": 43.55916,
+   "Lon": 12.155903,
+   "Ele": 320,
+   "local_code": "AR01",
+   "ident": "IT-0003",
+   "iso_country": "IT"
+  },
+  {
+   "type": "small_airport",
+   "name": "Foligno Airfield",
+   "gps_code": "LIAF",
+   "freq": "119.555",
+   "Lat": 42.9328,
+   "Lon": 12.71237,
+   "Ele": 222.5,
+   "ident": "LIAF",
+   "iso_country": "IT",
+   "icao_code": "LIAF",
+   "local_code": "PG02",
+   "length_ft": 4593,
+   "width_ft": 98,
+   "heading": 170,
+   "QFU": "35"
+  },
+  {
+   "type": "medium_airport",
+   "name": "Perugia San Francesco d'Assisi – Umbria International Airport",
+   "gps_code": "LIRZ",
+   "freq": "118.100",
+   "Lat": 43.095901,
+   "Lon": 12.5132,
+   "Ele": 212.4,
+   "ident": "LIRZ",
+   "iso_country": "IT",
+   "icao_code": "LIRZ",
+   "iata_code": "PEG",
+   "local_code": "PG10",
+   "length_ft": 7215,
+   "width_ft": 148,
+   "heading": 14,
+   "QFU": "19"
+  },
+  {
+   "type": "small_airport",
+   "name": "Santa Maria Rossa Airfield",
+   "gps_code": "IT-0313",
+   "freq": "",
+   "Lat": 43.024026,
+   "Lon": 12.387359,
+   "Ele": 173.7,
+   "local_code": "PGSMR",
+   "ident": "IT-0313",
+   "iso_country": "IT",
+   "length_ft": 1312,
+   "width_ft": 148,
+   "QFU": "31",
+   "heading": 310
+  },
+  {
+   "type": "small_airport",
+   "name": "Peter Pan Airfield",
+   "gps_code": "IT-0214",
+   "freq": "",
+   "Lat": 42.97183,
+   "Lon": 12.371257,
+   "Ele": 175,
+   "local_code": "PGMAR",
+   "ident": "IT-0214",
+   "iso_country": "IT",
+   "length_ft": 1804,
+   "width_ft": 98,
+   "QFU": "20",
+   "heading": 200
+  },
+  {
+   "type": "small_airport",
+   "name": "Montemelino Airfield",
+   "gps_code": "IT-0392",
+   "freq": "",
+   "Lat": 43.102464,
+   "Lon": 12.254116,
+   "Ele": 222.8,
+   "local_code": "PGMAG",
+   "ident": "IT-0392",
+   "iso_country": "IT",
+   "length_ft": 2231,
+   "width_ft": 98,
+   "QFU": "30",
+   "heading": 300
+  },
+  {
+   "type": "small_airport",
+   "name": "Sagrantino Airfield",
+   "gps_code": "IT-0163",
+   "freq": "",
+   "Lat": 42.890278,
+   "Lon": 12.533056,
+   "Ele": 274.3,
+   "local_code": "PGGCT",
+   "ident": "IT-0163",
+   "iso_country": "IT"
+  },
+  {
+   "type": "small_airport",
+   "name": "Molinella Airfield",
+   "gps_code": "IT-0315",
+   "freq": "",
+   "Lat": 43.122501,
+   "Lon": 12.206919,
+   "Ele": 240.8,
+   "ident": "IT-0315",
+   "iso_country": "IT",
+   "local_code": "PGMAC",
+   "length_ft": 1640,
+   "width_ft": 66,
+   "QFU": "22",
+   "heading": 220
+  },
+  {
+   "type": "small_airport",
+   "name": "Campo di Volo \"Aligubbio\"",
+   "gps_code": "IT-0215",
+   "freq": "",
+   "Lat": 43.3173,
+   "Lon": 12.5731,
+   "Ele": 419.7,
+   "local_code": "PGGUB",
+   "ident": "IT-0215",
+   "iso_country": "IT"
+  },
+  {
+   "type": "small_airport",
+   "name": "San Terenziano Airfield",
+   "gps_code": "IT-0312",
+   "freq": "",
+   "Lat": 42.85723,
+   "Lon": 12.473179,
+   "Ele": 511.8,
+   "local_code": "PGSTR",
+   "ident": "IT-0312",
+   "iso_country": "IT",
+   "length_ft": 2001,
+   "width_ft": 131,
+   "QFU": "24",
+   "heading": 240
+  },
+  {
+   "type": "small_airport",
+   "name": "Aviosuperficie Ali Umbre",
+   "gps_code": "IT-0479",
+   "freq": "",
+   "Lat": 43.27045,
+   "Lon": 12.7422267,
+   "Ele": 0,
+   "local_code": "PGGUA",
+   "ident": "IT-0479",
+   "iso_country": "IT"
+  },
+  {
+   "type": "small_airport",
+   "name": "Pantalla Airfield",
+   "gps_code": "IT-0207",
+   "freq": "",
+   "Lat": 42.871082,
+   "Lon": 12.384741,
+   "Ele": 148.1,
+   "local_code": "PGPNT",
+   "ident": "IT-0207",
+   "iso_country": "IT"
+  },
+  {
+   "type": "small_airport",
+   "name": "Campo di Volo Pietralunga",
+   "gps_code": "IT-0230",
+   "freq": "130.000",
+   "Lat": 43.450539,
+   "Lon": 12.401383,
+   "Ele": 689.8,
+   "local_code": "PGPLU",
+   "ident": "IT-0230",
+   "iso_country": "IT",
+   "length_ft": 1509,
+   "width_ft": 79,
+   "QFU": "19",
+   "heading": 190
+  },
+  {
+   "type": "small_airport",
+   "name": "Campo di Volo Montefalco",
+   "gps_code": "IT-0314",
+   "freq": "",
+   "Lat": 42.885358,
+   "Lon": 12.693324,
+   "Ele": 211.8,
+   "local_code": "PGMFA",
+   "ident": "IT-0314",
+   "iso_country": "IT",
+   "length_ft": 1804,
+   "width_ft": 82,
+   "QFU": "35",
+   "heading": 350
+  },
+  {
+   "type": "small_airport",
+   "name": "Il Falco Airfield",
+   "gps_code": "IT-0001",
+   "freq": "130.000",
+   "Lat": 45.269254,
+   "Lon": 7.950733,
+   "Ele": 234.1,
+   "local_code": "TOMAZ",
+   "ident": "IT-0001",
+   "iso_country": "IT",
+   "length_ft": 1148,
+   "width_ft": 66,
+   "QFU": "36",
+   "heading": 360
+  }
+ ],
+ "/settings/db.frequencies.json": {
+  "global": {
+   "125.600": {
+    "gps": {
+     "lat": 43.095901,
+     "lon": 12.5132,
+     "range": 25000
+    },
+    "name": "Perugia Approach"
+   },
+   "131.125": {
+    "gps": {
+     "lat": 40.63084716831531,
+     "lon": 17.92425748877277,
+     "range": 500000
+    },
+    "name": "BRINDISI"
+   },
+   "126.425": {
+    "gps": {
+     "lat": 45.40845091257402,
+     "lon": 11.88963135972633,
+     "range": 500000
+    },
+    "name": "PADOVA"
+   },
+   "124.150": {
+    "gps": {
+     "lat": 45.47232573387434,
+     "lon": 9.19140680728237,
+     "range": 500000
+    },
+    "name": "MILANO"
+   },
+   "124.925": {
+    "gps": {
+     "lat": 45.47232573387434,
+     "lon": 9.19140680728237,
+     "range": 500000
+    },
+    "name": "MILANO"
+   },
+   "128.925": {
+    "gps": {
+     "lat": 45.47232573387434,
+     "lon": 9.19140680728237,
+     "range": 500000
+    },
+    "name": "MILANO"
+   },
+   "135.075": {
+    "gps": {
+     "lat": 45.47232573387434,
+     "lon": 9.19140680728237,
+     "range": 500000
+    },
+    "name": "MILANO"
+   },
+   "130.000": {
+    "gps": {
+     "lat": 43.0,
+     "lon": 12.0,
+     "range": 500000
+    },
+    "name": "130Mhz Mountain"
+   },
+   "125.100": {
+    "gps": {
+     "lat": 41.906937255255045,
+     "lon": 12.493022362177584,
+     "range": 500000
+    },
+    "name": "FIC ROMA EST"
+   },
+   "134.125": {
+    "gps": {
+     "lat": 41.906937255255045,
+     "lon": 12.493022362177584,
+     "range": 500000
+    },
+    "name": "FIC ROMA SEA"
+   },
+   "129.575": {
+    "gps": {
+     "lat": 41.906937255255045,
+     "lon": 12.493022362177584,
+     "range": 500000
+    },
+    "name": "FIC ROMA SOUTH"
+   },
+   "125.750": {
+    "gps": {
+     "lat": 41.906937255255045,
+     "lon": 12.493022362177584,
+     "range": 500000
+    },
+    "name": "FIC ROMA NORTH"
+   },
+   "119.075": {
+    "gps": {
+     "lat": 41.906937255255045,
+     "lon": 12.493022362177584,
+     "range": 500000
+    },
+    "name": "FIC ROMA CENTER"
+   },
+   "121.500": {
+    "gps": {
+     "lat": 43.0,
+     "lon": 12.0,
+     "range": 500000
+    },
+    "name": "121.5 EMER"
+   }
+  }
+ }
+}

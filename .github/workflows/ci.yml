@@ -1,0 +1,128 @@
+name: CI
+
+# Unit and integration tests (tests/, see CLAUDE.md), and each case file against the vocabulary
+# of its Vosk model. Nothing here needs the Pi: no audio, no Vosk or Piper runtime, no RB-01.
+# The handlers talk to the fake RB-01 of tests/conftest.py. Piper and recording runs
+# (voicetest.py --piper / --wav) stay local: Piper varies between runs, and the recordings are
+# not in the repository.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  test:
+    name: Unit and integration tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Raspberry Pi OS Bookworm ships Python 3.11: compiling there catches what newer Pythons
+      # accept, such as an f-string that reuses its own quote inside {…}
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+
+      # The package is text2num, the import is text_to_num
+      - name: Install
+        run: pip install pytest text2num requests
+
+      - name: Compile
+        run: python -m py_compile *.py ci/*.py tests/*.py
+
+      - name: Shell syntax
+        run: |
+          for f in *.sh; do
+            bash -n "$f"
+          done
+
+      - name: Test
+        run: python -m pytest tests -ra --junitxml=test-results.xml
+
+      - name: Upload test results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results
+          path: test-results.xml
+          retention-days: 7
+
+  vocabulary:
+    name: Vosk vocabulary
+    runs-on: ubuntu-latest
+    env:
+      # Problems fail the job for the reference language, and are warnings for the others
+      REFERENCE: it
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+
+      # vocab_check.py imports assistant.py for the spelling alphabet
+      - name: Install
+        run: pip install text2num requests
+
+      # rbvoice.sh holds the Vosk model of each language. Asking it, rather than repeating the
+      # list here, checks a new language block without editing CI.
+      - name: List models
+        id: models
+        run: |
+          sed -n 's|^VOSKMODEL=.*/vosk-models/||p; s|^CASESPATH=.*/rbvoice-cases\.\(.*\)\.json$|\1|p' rbvoice.sh |
+            paste -d ' ' - - > "$RUNNER_TEMP/models.txt"
+          cat "$RUNNER_TEMP/models.txt"
+          if ! grep -q " $REFERENCE$" "$RUNNER_TEMP/models.txt"; then
+            echo "::error title=No reference model::rbvoice.sh has no block for '$REFERENCE'"
+            exit 1
+          fi
+          echo "key=$(sort "$RUNNER_TEMP/models.txt" | sha256sum | cut -c1-16)" >> "$GITHUB_OUTPUT"
+          echo "VOCAB_DIR=$HOME/.cache/vosk-vocab" >> "$GITHUB_ENV"
+
+      # A model never changes under its name, so its vocabulary is fetched once and cached
+      - name: Restore vocabularies
+        uses: actions/cache@v6
+        with:
+          path: ${{ env.VOCAB_DIR }}
+          key: vosk-vocab-${{ steps.models.outputs.key }}
+
+      # Only graph/words.txt, a few MB, out of each 1-2 GB model zip
+      - name: Fetch vocabularies
+        run: |
+          while read -r model lang; do
+            if [ ! -f "$VOCAB_DIR/$model/graph/words.txt" ] && [ ! -f "$VOCAB_DIR/$model/graph/Gr.fst" ]; then
+              python ci/fetch_vocab.py "$model" "$VOCAB_DIR"
+            fi
+          done < "$RUNNER_TEMP/models.txt"
+
+      - name: Check
+        run: |
+          status=0
+          while read -r model lang; do
+            echo "::group::$lang ($model)"
+            if python vocab_check.py "$VOCAB_DIR/$model" "rbvoice-cases.$lang.json" > "$RUNNER_TEMP/report.txt"; then
+              cat "$RUNNER_TEMP/report.txt"
+            else
+              cat "$RUNNER_TEMP/report.txt"
+              level=warning
+              if [ "$lang" = "$REFERENCE" ]; then
+                level=error
+                status=1
+              fi
+              grep -v -e ' words in the ' -e ' problem(s)$' "$RUNNER_TEMP/report.txt" |
+                while read -r line; do
+                  echo "::$level title=$lang vocabulary::$line"
+                done
+            fi
+            echo "::endgroup::"
+          done < "$RUNNER_TEMP/models.txt"
+          exit $status
