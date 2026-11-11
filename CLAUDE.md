@@ -13,17 +13,17 @@ There is no build step or linter. The code only runs end to end on the target de
 Deployment, run as root on the Pi (see `Makefile`):
 
 ```bash
-make venv                                   # create /opt/rbvoice venv + pip install text2num vosk piper-tts
+make venv                                   # create /opt/addons/rbvoice venv + pip install text2num vosk piper-tts
 make vosk-model VOICELANG=fr                # default it → vosk-model-<lang>-0.22
 make piper-model PIPER_VOICE=fr/fr_FR/mls/medium/fr_FR-mls-medium   # default: Italian "paola"
 make install-dependencies-standalone        # sox (needed for noise reduction); also -bluetooth, -android
-make install                                # copy *.sh/*.py to /opt/rbvoice/bin, install + enable systemd unit
+make install                                # copy *.sh/*.py to /opt/addons/rbvoice/bin, install + enable systemd unit
 ```
 
 Running:
 
 ```bash
-systemctl restart rbvoice      # unit runs /opt/rbvoice/bin/rbvoice.sh as user pi, WorkingDirectory=/opt/rbvoice
+systemctl restart rbvoice      # unit runs /opt/addons/rbvoice/bin/rbvoice.sh as user pi, WorkingDirectory=/opt/addons/rbvoice
 journalctl -u rbvoice -f       # all output goes to syslog; the code logs via print()
 ```
 
@@ -54,7 +54,7 @@ python3 -c "from RuleEvaluator import RuleEvaluator
 for r in RuleEvaluator.from_file('rbvoice-aircraft-rules.json').evaluate_rules({'cht1':150,'cht2':160,'cht4':200}):
     print(r.rule_name, r.probe_name, r.color.value, r.result_value)"
 # Words Vosk can never write; the model dir needs only graph/words.txt (big) or graph/Gr.fst (small)
-python3 vocab_check.py /opt/rbvoice/vosk-models/vosk-model-it-0.22 rbvoice-cases.it.json [word ...]
+python3 vocab_check.py /opt/addons/rbvoice/vosk-models/vosk-model-it-0.22 rbvoice-cases.it.json [word ...]
 # Route the test phrases as text (needs text2num + requests only)
 python3 voicetest.py rbvoice-cases.it.json --phrases rbvoice-test.it.txt
 # Same phrases spoken by Piper and heard by Vosk; or real recordings
@@ -205,7 +205,7 @@ The `helper_EMS_EngineStatus` method evaluates colour-arc rules over EMS probes.
 
 | Path | Contents |
 |---|---|
-| `/opt/rbvoice/` | venv. `bin/` holds the copied scripts (so `rbvoice.sh` can `source activate`); also `vosk-models/` and `piper-models/` |
+| `/opt/addons/rbvoice/` | venv. `bin/` holds the copied scripts (so `rbvoice.sh` can `source activate`); also `vosk-models/` and `piper-models/` |
 | `/boot/firmware/rb/` | case files, aircraft rules, `db.airfields.json`, `db.frequencies.json` (absent on older images), optional `noise.prof` (create with `CreateNoiseProfile.sh <dir>`). On the RB the web `/settings` folder is a symlink to this folder, so `/settings/db.*.json` on the server is the same data. `assistant.py` hard-codes the rules path. `rbvoice.py` hard-codes the noise-profile, airfields and frequencies paths. |
 | `/opt/stratux/www/playback/` | recordings and conversation history (`--rec`) |
 

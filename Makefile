@@ -1,4 +1,4 @@
-VENV_DIR := /opt/rbvoice
+VENV_DIR := /opt/addons/rbvoice
 PYTHON := $(VENV_DIR)/bin/python
 PIP := $(VENV_DIR)/bin/pip
 
