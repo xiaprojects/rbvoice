@@ -87,6 +87,8 @@ Per utterance:
 4. The reply goes to a **persistent** `piper --output_raw` process (22.5 kHz). Its stdout is streamed to `pipe-play.sh`, saved as `vrout_<ts>.wav`, and the conversation is appended to `vr_<startup>.json` in `--rec`.
 5. `voiceEvent()` sends SPEAKING/VOICE status asynchronously as a PUT to the `display` component's endpoint (`/remote/voice`), so the RB display can show it.
 
+**Wake word and push to talk** (`bridge.py`, user doc in `docs/voice-control.md`). Two RB-01 bridge keys drive listening: `voice_wakeword` (1 = answer after a wake word, 0 = ignore audio unless triggered) and `voice_trigger` (1 = listen now). After the startup phrase, rbvoice posts the case file's `wake_word_enabled` (default `true`) and `voice_trigger: 0` to `/bridge/float`, then follows `/bridge/float/ws` with a stdlib WebSocket client (no new venv package). The socket says nothing on connect, so each (re)connect starts with a GET. It resends the whole map on any key's change, so `VoiceControl` treats only a 0→1 edge of `voice_trigger` as a press. A press opens a `--trigger-window` (8 s) for speech to start; the utterance in it goes to `handle_utterance(..., require_wake_word=False)`, and rbvoice writes `voice_trigger: 0` back when the window closes. The RB-01 voice page has PUSH TO TALK and WAKE WORD buttons for these keys.
+
 Each saved WAV fires `$PWD/bin/remotecopy.sh`, which depends on the service's working directory. The script is currently disabled by an early `exit 0`.
 
 **The Vosk grammar.** `buildGrammar()` in `rbvoice.py` (also used by `voicetest.py`) builds the grammar Vosk receives. It is serialized with `ensure_ascii=False`, because Vosk does not decode `\u` escapes and would drop every accented word ("velocità", "température"). A missing `db.airfields.json` only leaves the airfield names out. The grammar holds:
@@ -108,7 +110,7 @@ What the Piper tests of the big model showed:
 
 ### NLU pipeline: `assistant.handle_utterance()`
 
-1. Rewrite `aliases`, strip `skip_words`, then fuzzy-match a **wake word** against the first one to three words, scoring at least `WAKE_WORD_MIN` (0.85). Aliases come first because spelled acronyms contain skip words ("e gi ti" is EGT). A skip word ending in an apostrophe ("l'", "dell'") is also stripped from the word it is attached to. If none matches, return `""` and stay silent. The matched wake word is stored as `last_wwword`, which replies speak.
+1. Rewrite `aliases`, strip `skip_words`, then fuzzy-match a **wake word** against the first one to three words, scoring at least `WAKE_WORD_MIN` (0.85). Aliases come first because spelled acronyms contain skip words ("e gi ti" is EGT). A skip word ending in an apostrophe ("l'", "dell'") is also stripped from the word it is attached to. If none matches, return `""` and stay silent, unless `require_wake_word=False` (an utterance after a trigger): then the whole text goes on and `last_target` is `""`, which every display accepts. The matched wake word is stored as `last_wwword`, which replies speak.
 
    The RB listens on the intercom feed, so it hears radio calls and passengers too: in flight recordings, 356 of 360 utterances were not meant for it. Matching anywhere in the sentence at 0.80 answered radio traffic ("copiate" ~ copriwater, "il secondo" ~ secondario, "tipo di aeromobile").
 

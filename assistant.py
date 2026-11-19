@@ -959,7 +959,12 @@ class ValueHelper:
             return values_dict
 
 
-def handle_utterance(raw_text: str, ctx: SessionContext, config: Dict[str, Any]) -> str:
+def handle_utterance(raw_text: str, ctx: SessionContext, config: Dict[str, Any],
+                     require_wake_word: bool = True) -> str:
+  """
+  The reply to one utterance, "" to stay silent. require_wake_word is False for an utterance heard
+  after a trigger (push to talk): a wake word is then optional, and still names the display.
+  """
   try:
     if raw_text == None or raw_text == "":
         return ""
@@ -970,8 +975,11 @@ def handle_utterance(raw_text: str, ctx: SessionContext, config: Dict[str, Any])
 
     wwscore, wwword, text = detect_wake_word(text_without_skip,config['wake_words'])
     if wwscore < 0.1 or wwword == None or  text == None:
-        print(f"607 {raw_text}:{text_without_skip} No wake up word")
-        return ""
+        if require_wake_word:
+            print(f"607 {raw_text}:{text_without_skip} No wake up word")
+            return ""
+        # Triggered without a wake word: no display named, so the target "" reaches every display
+        wwword, text = "", text_without_skip
 
 
     print(f"U {ctx.Context}")

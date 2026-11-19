@@ -1,5 +1,6 @@
 {
   "language": "it",
+  "wake_word_enabled": true,
   "wake_words": [
     "compiute",
     "computer",

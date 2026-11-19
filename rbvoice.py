@@ -12,6 +12,7 @@ import math
 from datetime import datetime
 from vosk import Model, KaldiRecognizer, SetLogLevel
 from assistant import handle_utterance,SessionContext,CONFIG,ctx,SPELLING_ALPHABET
+from bridge import BridgeFloat, VoiceControl
 import traceback
 import struct
 from array import array
@@ -389,6 +390,8 @@ def startVR():
     parser.add_argument('--piper-model', required=True, help='Path to Piper .onnx model')
     parser.add_argument('--piper-json', required=True, help='Path to Piper .onnx.json config')
     parser.add_argument('--threshold', type=int, default=150, help='RMS threshold for speech detection')
+    parser.add_argument('--trigger-window', type=float, default=8.0,
+                        help='Seconds to start speaking after a trigger (push to talk)')
     args = parser.parse_args()
 
     DEV = args.dev
@@ -416,6 +419,7 @@ def startVR():
 
     history = []
     ctx = SessionContext()
+    bridge = None
     with open(args.cases, 'r') as f:
         CONFIG = json.load(f)
 
@@ -435,6 +439,15 @@ def startVR():
     welcomePhrase = CONFIG["answers"]["startup"]
     print(welcomePhrase)
     speak(welcomePhrase,startupTime,SAMPLE_RATE_PLAY, DEVOUT, RECORDINGSPATH)
+
+    # Initialization complete: publish the wake word default on the RB-01 bridge, then follow it.
+    # The RB-01 can switch the wake word off and on, and trigger listening (push to talk).
+    bridge = BridgeFloat(CONFIG["base_url"], lambda data: control.on_bridge(data))
+    control = VoiceControl(CONFIG.get("wake_word_enabled", True), args.trigger_window, bridge)
+    control.publish()
+    bridge.start()
+    if not control.wake_word_enabled:
+        print("Wake word disabled: listening only after a trigger")
 
     try:
         while True:
@@ -458,6 +471,11 @@ def startVR():
             while True:
                 try:
                     data = dataqueue.get(timeout=1.0)
+                    # Without the wake word, audio is heard only in a trigger window
+                    # (an utterance already started is heard to its end)
+                    if not control.poll(waitingForSilence > 0) and waitingForSilence == 0:
+                        lastSample = data
+                        continue
                     level = rms16le(data)
                     
                     if(level > THRESHOLD):
@@ -501,7 +519,10 @@ def startVR():
 
                             # Use Piper HTTP server for TTS (raw output)
                             history.append({"role": "user", "content": text,"timestamp":timestamp})
-                            reply = handle_utterance(text, ctx, CONFIG)
+                            # After a trigger the pilot need not say a wake word
+                            triggered = control.triggered
+                            control.end_trigger()
+                            reply = handle_utterance(text, ctx, CONFIG, require_wake_word=not triggered)
                             #reply = ""
                             print(f'Reply: {reply}')
                             
@@ -546,6 +567,8 @@ def startVR():
         print(traceback.format_exc())        
     finally:
         stoprecording.set()
+        if bridge is not None:
+            bridge.stop()
         if arecordproc:
             arecordproc.terminate()
             arecordproc.wait()

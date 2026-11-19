@@ -5,6 +5,7 @@
     "secundario": "secondario",
     "pantalla": "display"
   },
+  "wake_word_enabled": true,
   "wake_words": [
     "ordenador",
     "computadora",
