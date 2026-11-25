@@ -123,8 +123,8 @@ def test_autopilot_target(statuses, expected):
 
 
 def test_engine_rules():
-    results = {r.rule_name: r for r in RuleEvaluator.from_file(RULES).evaluate_rules({"cht1": 150, "cht2": 160, "cht4": 200})}
-    assert (results["CHTAVG"].color.value, results["CHTAVG"].result_value) == ("GREEN", 170.0)
+    results = {r.rule_name: r for r in RuleEvaluator.from_file(RULES).evaluate_rules({"cht1": 150, "cht2": 160, "cht4": 210})}
+    assert (results["CHTAVG"].color.value, round(results["CHTAVG"].result_value, 1)) == ("GREEN", 173.3)
     assert (results["CHTMAX"].probe_name, results["CHTMAX"].color.value) == ("cht4", "YELLOW")
     assert (results["CHTMIN"].probe_name, results["CHTMIN"].color.value) == ("cht1", "GREEN")
     assert (results["CHTDIFF"].probe_name, results["CHTDIFF"].color.value) == ("cht4", "RED")

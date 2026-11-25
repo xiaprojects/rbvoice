@@ -201,7 +201,7 @@ To add a language:
 
 ### Engine health: `RuleEvaluator.py` + `rbvoice-aircraft-rules.json`
 
-The `helper_EMS_EngineStatus` method evaluates colour-arc rules over EMS probes. Algorithms are `average`, `max`, `min` and `averageDiff`. For each rule it injects `<RULE>`, `<RULE>PROBELABEL`, `<RULE>PROBE` and `<RULE>VALUE` into the values dict, which is what templates such as `{CHTAVG}` and `{CHTMAXPROBELABEL}` reference. `max`, `min` and `averageDiff` report a probe name, and that name must exist as a key in `answers`, or the whole reply fails.
+The `helper_EMS_EngineStatus` method evaluates colour-arc rules over EMS probes. Algorithms are `average`, `max`, `min` and `averageDiff`. For each rule it injects `<RULE>`, `<RULE>PROBELABEL`, `<RULE>PROBE` and `<RULE>VALUE` into the values dict, which is what templates such as `{CHTAVG}` and `{CHTMAXPROBELABEL}` reference. `max`, `min` and `averageDiff` report a probe name, which is spoken through its label in `answers` (`test_rule_labels_in_answers` requires one in every language). A missing label falls back to the raw probe name rather than failing the reply, since a device may get a new rules file before its case files.
 
 ## Deployed file locations
 

@@ -939,7 +939,8 @@ class ValueHelper:
                 print(f"Aircraft Rule '{r.rule_name}': {r.color.value} (value: {r.result_value:.2f})")
                 values_dict[r.rule_name]=self.config['answers'][r.color.value]
                 if r.probe_name != None and r.probe_name != "":
-                    values_dict[r.rule_name+"PROBELABEL"]=self.config['answers'][r.probe_name]
+                    # A rule added on the device before its case file has the label must not silence the reply
+                    values_dict[r.rule_name+"PROBELABEL"]=self.config['answers'].get(r.probe_name, r.probe_name)
                 else:
                     values_dict[r.rule_name+"PROBELABEL"]=""
                 values_dict[r.rule_name+"PROBE"]=r.probe_name
