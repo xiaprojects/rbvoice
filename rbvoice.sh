@@ -32,6 +32,8 @@ wait_for_bt_input() {
 # Example of remote server
 SERVER="http://192.168.1.30"
 SERVER="http://192.168.10.1"
+# Folder with case files, aircraft rules, db.airfields.json, db.frequencies.json, noise.prof
+RBDIR=/boot/firmware/rb
 
 # VOSK Models: https://alphacephei.com/vosk/models
 # Piper Models: https://huggingface.co/rhasspy/piper-voices/tree/main/fr/fr_FR
@@ -43,7 +45,7 @@ VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-fr-0.22
 #VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-small-fr-0.22
 PIPERONNX=$(dirname $0)/../piper-models/fr_FR-mls-medium.onnx
 PIPERCONF=$(dirname $0)/../piper-models/fr_FR-mls-medium.onnx.json                
-CASESPATH=/boot/firmware/rb/rbvoice-cases.fr.json
+CASESPATH=$RBDIR/rbvoice-cases.fr.json
 
 # Example for ENGLISH Language
 # make vosk-model MODEL=vosk-model-en-us-0.22 && make piper-model PIPER_VOICE=en/en_GB/alan/medium/en_GB-alan-medium
@@ -51,7 +53,7 @@ VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-en-us-0.22
 #VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-small-en-us-0.15
 PIPERONNX=$(dirname $0)/../piper-models/en_GB-alan-medium.onnx
 PIPERCONF=$(dirname $0)/../piper-models/en_GB-alan-medium.onnx.json
-CASESPATH=/boot/firmware/rb/rbvoice-cases.en.json
+CASESPATH=$RBDIR/rbvoice-cases.en.json
 
 # Example for SPANISH Language
 # make vosk-model MODEL=vosk-model-es-0.42 && make piper-model PIPER_VOICE=es/es_ES/davefx/medium/es_ES-davefx-medium
@@ -59,7 +61,7 @@ VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-es-0.42
 #VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-small-es-0.42
 PIPERONNX=$(dirname $0)/../piper-models/es_ES-davefx-medium.onnx
 PIPERCONF=$(dirname $0)/../piper-models/es_ES-davefx-medium.onnx.json
-CASESPATH=/boot/firmware/rb/rbvoice-cases.es.json
+CASESPATH=$RBDIR/rbvoice-cases.es.json
 
 # Example for GERMAN Language
 # make vosk-model MODEL=vosk-model-de-0.21 && make piper-model PIPER_VOICE=de/de_DE/thorsten/medium/de_DE-thorsten-medium
@@ -67,19 +69,19 @@ VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-de-0.21
 #VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-small-de-0.15
 PIPERONNX=$(dirname $0)/../piper-models/de_DE-thorsten-medium.onnx
 PIPERCONF=$(dirname $0)/../piper-models/de_DE-thorsten-medium.onnx.json
-CASESPATH=/boot/firmware/rb/rbvoice-cases.de.json
+CASESPATH=$RBDIR/rbvoice-cases.de.json
 
 # Example for ITALIAN Language
 VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-it-0.22
 #VOSKMODEL=$(dirname $0)/../vosk-models/vosk-model-small-it-0.22
 PIPERONNX=$(dirname $0)/../piper-models/it_IT-paola-medium.onnx
 PIPERCONF=$(dirname $0)/../piper-models/it_IT-paola-medium.onnx.json
-CASESPATH=/boot/firmware/rb/rbvoice-cases.it.json
+CASESPATH=$RBDIR/rbvoice-cases.it.json
 
 # The last language block above wins
 RECPATH=/opt/stratux/www/playback/
 # External pipe-play.sh and pipe-rec.sh
 PATH=$(dirname $0):$PATH
 
-exec python $(dirname $0)/rbvoice.py --threshold 450 --rec $RECPATH --server $SERVER --out "$DEVOUT" --dev "$DEV" --model $VOSKMODEL --piper-model $PIPERONNX --piper-json $PIPERCONF --cases $CASESPATH
+exec python $(dirname $0)/rbvoice.py --threshold 450 --rec $RECPATH --server $SERVER --out "$DEVOUT" --dev "$DEV" --model $VOSKMODEL --piper-model $PIPERONNX --piper-json $PIPERCONF --cases $CASESPATH --rb-dir $RBDIR
 

@@ -26,7 +26,7 @@ install:
 	mkdir -p $(VENV_DIR)/bin
 	cp -f *.sh $(VENV_DIR)/bin/
 	cp -f *.py $(VENV_DIR)/bin/
-	cp -f voiceia.version /opt/stratux
+	cp -f ota/voiceia.version /opt/stratux
 	test -f /boot/firmware/rb/rbvoice-aircraft-rules.json || cp -f rbvoice-aircraft-rules.json /boot/firmware/rb
 	test -f /boot/firmware/rb/rbvoice-cases.it.json || cp -f rbvoice-cases.it.json /boot/firmware/rb
 	test -f /boot/firmware/rb/rbvoice-cases.fr.json || cp -f rbvoice-cases.fr.json /boot/firmware/rb
@@ -51,12 +51,12 @@ vosk-model:
 	rm -f $(MODEL_ZIP)
 venv:
 	mkdir -p $(VENV_DIR)
-	chown pi $(VENV_DIR)
 	python3 -m venv $(VENV_DIR)
 	$(PYTHON) -m pip install --upgrade pip
 	$(PIP) install text2num
 	$(PIP) install vosk
 	$(PIP) install piper-tts
+	chown pi $(VENV_DIR)
 
 install-dependencies-standalone:
 	apt -y install sox

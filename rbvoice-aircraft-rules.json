@@ -9,18 +9,18 @@
             "colors": [
                 {
                     "color": "green",
-                    "min": 40,
-                    "max": 74
+                    "min": 37.8,
+                    "max": 104.4
                 },
                 {
                     "color": "yellow",
-                    "min": 75,
-                    "max": 119
+                    "min": 104.4,
+                    "max": 118.3
                 },
                 {
                     "color": "red",
-                    "min": 120,
-                    "max": 9999
+                    "min": 118.3,
+                    "max": 99999
                 }
             ]
         },
@@ -35,20 +35,21 @@
             "colors": [
                 {
                     "color": "green",
-                    "min": 500,
-                    "max": 699
+                    "min": 300,
+                    "max": 750
                 },
                 {
                     "color": "yellow",
-                    "min": 700,
-                    "max": 749
+                    "min": 750,
+                    "max": 898.9
                 },
                 {
                     "color": "red",
-                    "min": 749,
-                    "max": 9999
+                    "min": 898.9,
+                    "max": 99999
                 }
-            ]
+            ],
+            "alert": false
         },
         {
             "name": "EGTMAX",
@@ -61,18 +62,18 @@
             "colors": [
                 {
                     "color": "green",
-                    "min": 500,
-                    "max": 699
+                    "min": 300,
+                    "max": 750
                 },
                 {
                     "color": "yellow",
-                    "min": 700,
-                    "max": 749
+                    "min": 750,
+                    "max": 898.9
                 },
                 {
                     "color": "red",
-                    "min": 749,
-                    "max": 9999
+                    "min": 898.9,
+                    "max": 99999
                 }
             ]
         },
@@ -87,20 +88,21 @@
             "colors": [
                 {
                     "color": "green",
-                    "min": 120,
-                    "max": 179
+                    "min": 65.6,
+                    "max": 204.4
                 },
                 {
                     "color": "yellow",
-                    "min": 180,
-                    "max": 219
+                    "min": 204.4,
+                    "max": 223.9
                 },
                 {
                     "color": "red",
-                    "min": 220,
-                    "max": 9999
+                    "min": 223.9,
+                    "max": 99999
                 }
-            ]
+            ],
+            "alert": false
         },
         {
             "name": "CHTMAX",
@@ -113,18 +115,18 @@
             "colors": [
                 {
                     "color": "green",
-                    "min": 120,
-                    "max": 179
+                    "min": 65.6,
+                    "max": 204.4
                 },
                 {
                     "color": "yellow",
-                    "min": 180,
-                    "max": 219
+                    "min": 204.4,
+                    "max": 223.9
                 },
                 {
                     "color": "red",
-                    "min": 220,
-                    "max": 9999
+                    "min": 223.9,
+                    "max": 99999
                 }
             ]
         },
@@ -139,20 +141,21 @@
             "colors": [
                 {
                     "color": "green",
-                    "min": 120,
-                    "max": 179
+                    "min": 65.6,
+                    "max": 204.4
                 },
                 {
                     "color": "yellow",
-                    "min": 180,
-                    "max": 219
+                    "min": 204.4,
+                    "max": 223.9
                 },
                 {
                     "color": "red",
-                    "min": 220,
-                    "max": 9999
+                    "min": 223.9,
+                    "max": 99999
                 }
-            ]
+            ],
+            "alert": false
         },
         {
             "name": "CHTDIFF",
@@ -166,17 +169,17 @@
                 {
                     "color": "green",
                     "min": 0,
-                    "max": 5
+                    "max": 20
                 },
                 {
                     "color": "yellow",
-                    "min": 6,
-                    "max": 15
+                    "min": 20,
+                    "max": 35
                 },
                 {
                     "color": "red",
-                    "min": 16,
-                    "max": 9999
+                    "min": 35,
+                    "max": 99999
                 }
             ]
         },
@@ -192,19 +195,215 @@
                 {
                     "color": "green",
                     "min": 0,
-                    "max": 10
+                    "max": 35
                 },
                 {
                     "color": "yellow",
-                    "min": 10,
-                    "max": 20
+                    "min": 35,
+                    "max": 70
                 },
                 {
                     "color": "red",
-                    "min": 20,
-                    "max": 9999
+                    "min": 70,
+                    "max": 99999
                 }
             ]
+        },
+        {
+            "name": "RPMMAX",
+            "algorithm": "max",
+            "probeNames": [
+                "enginerpm"
+            ],
+            "colors": [
+                {
+                    "color": "green",
+                    "min": 0,
+                    "max": 2500
+                },
+                {
+                    "color": "yellow",
+                    "min": 2500,
+                    "max": 2700
+                },
+                {
+                    "color": "red",
+                    "min": 2700,
+                    "max": 99999
+                }
+            ]
+        },
+        {
+            "name": "BATTERY",
+            "algorithm": "average",
+            "probeNames": [
+                "batteryvoltage"
+            ],
+            "colors": [
+                {
+                    "color": "red",
+                    "min": 0,
+                    "max": 12.0
+                },
+                {
+                    "color": "yellow",
+                    "min": 12.0,
+                    "max": 12.5
+                },
+                {
+                    "color": "green",
+                    "min": 12.5,
+                    "max": 15.9
+                },
+                {
+                    "color": "yellow",
+                    "min": 15.9,
+                    "max": 99
+                }
+            ]
+        },
+        {
+            "name": "UNDERVOLTAGE",
+            "algorithm": "max",
+            "probeNames": [
+                "undervoltage_now"
+            ],
+            "colors": [
+                {
+                    "color": "green",
+                    "min": 0,
+                    "max": 0.5
+                },
+                {
+                    "color": "red",
+                    "min": 0.5,
+                    "max": 99
+                }
+            ]
+        },
+        {
+            "name": "CABINAIR",
+            "algorithm": "max",
+            "probeNames": [
+                "airquality_aqi"
+            ],
+            "colors": [
+                {
+                    "color": "green",
+                    "min": 0.5,
+                    "max": 3.5
+                },
+                {
+                    "color": "yellow",
+                    "min": 3.5,
+                    "max": 4.5
+                },
+                {
+                    "color": "red",
+                    "min": 4.5,
+                    "max": 99
+                }
+            ]
+        },
+        {
+            "name": "ECO2",
+            "algorithm": "max",
+            "probeNames": [
+                "airquality_eco2"
+            ],
+            "colors": [
+                {
+                    "color": "green",
+                    "min": 400,
+                    "max": 1000
+                },
+                {
+                    "color": "yellow",
+                    "min": 1000,
+                    "max": 1500
+                },
+                {
+                    "color": "red",
+                    "min": 1500,
+                    "max": 65000
+                }
+            ],
+            "alert": false
+        },
+        {
+            "name": "TVOC",
+            "algorithm": "max",
+            "probeNames": [
+                "airquality_tvoc"
+            ],
+            "colors": [
+                {
+                    "color": "green",
+                    "min": 0,
+                    "max": 660
+                },
+                {
+                    "color": "yellow",
+                    "min": 660,
+                    "max": 2200
+                },
+                {
+                    "color": "red",
+                    "min": 2200,
+                    "max": 65000
+                }
+            ],
+            "alert": false
+        },
+        {
+            "name": "ICINGCARB",
+            "algorithm": "max",
+            "probeNames": [
+                "icing_carb"
+            ],
+            "colors": [
+                {
+                    "color": "green",
+                    "min": 0,
+                    "max": 20
+                },
+                {
+                    "color": "yellow",
+                    "min": 20,
+                    "max": 60
+                },
+                {
+                    "color": "red",
+                    "min": 60,
+                    "max": 100
+                }
+            ],
+            "alert": true
+        },
+        {
+            "name": "ICINGAIRFRAME",
+            "algorithm": "max",
+            "probeNames": [
+                "icing_airframe"
+            ],
+            "colors": [
+                {
+                    "color": "green",
+                    "min": 0,
+                    "max": 20
+                },
+                {
+                    "color": "yellow",
+                    "min": 20,
+                    "max": 60
+                },
+                {
+                    "color": "red",
+                    "min": 60,
+                    "max": 100
+                }
+            ],
+            "alert": true
         }
     ]
 }

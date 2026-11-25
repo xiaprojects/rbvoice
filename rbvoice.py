@@ -392,6 +392,8 @@ def startVR():
     parser.add_argument('--threshold', type=int, default=150, help='RMS threshold for speech detection')
     parser.add_argument('--trigger-window', type=float, default=8.0,
                         help='Seconds to start speaking after a trigger (push to talk)')
+    parser.add_argument('--rb-dir', default='/boot/firmware/rb',
+                        help='Folder with aircraft rules, db.airfields.json, db.frequencies.json and noise.prof')
     args = parser.parse_args()
 
     DEV = args.dev
@@ -401,6 +403,7 @@ def startVR():
     #SAMPLE_RATE_RECORDING = 22500
     SAMPLE_RATE_PLAY = 22500
     RECORDINGSPATH=args.rec
+    RBDIR = args.rb_dir
     TRAILLEN = 50
     THRESHOLD = args.threshold
     
@@ -424,11 +427,12 @@ def startVR():
         CONFIG = json.load(f)
 
     CONFIG["base_url"] = args.server
+    CONFIG["rules_path"] = os.path.join(args.rb_dir, "rbvoice-aircraft-rules.json")
 
 
 
     #supportedGrammar = extractCommandsFromAirfields(CONFIG,supportedGrammar)
-    stringOfCommands = buildGrammar(CONFIG)
+    stringOfCommands = buildGrammar(CONFIG, args.rb_dir)
     print(stringOfCommands)
     #rec.SetWords(True)
     rec = KaldiRecognizer(model, SAMPLE_RATE_RECORDING, stringOfCommands)
@@ -454,7 +458,7 @@ def startVR():
             rec.Reset()
             print("Listening... speak now")
             aparameters = [
-                'pipe-rec.sh',DEV,f"{SAMPLE_RATE_RECORDING}","/boot/firmware/rb/noise.prof"
+                'pipe-rec.sh',DEV,f"{SAMPLE_RATE_RECORDING}",os.path.join(RBDIR, "noise.prof")
             ]
             arecordproc = subprocess.Popen(aparameters, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,bufsize=0, universal_newlines=False)
             stoprecording.clear()

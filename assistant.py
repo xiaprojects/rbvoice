@@ -933,7 +933,7 @@ class ValueHelper:
 
     def helper_EMS_EngineStatus(self,parameter,values_dict) -> any:
         if isinstance(values_dict, dict) and values_dict:
-            evaluator = RuleEvaluator.from_file("/boot/firmware/rb/rbvoice-aircraft-rules.json")
+            evaluator = RuleEvaluator.from_file(self.config.get("rules_path", "/boot/firmware/rb/rbvoice-aircraft-rules.json"))
             results = evaluator.evaluate_rules(values_dict)
             for r in results:
                 print(f"Aircraft Rule '{r.rule_name}': {r.color.value} (value: {r.result_value:.2f})")

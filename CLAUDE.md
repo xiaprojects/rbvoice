@@ -208,7 +208,7 @@ The `helper_EMS_EngineStatus` method evaluates colour-arc rules over EMS probes.
 | Path | Contents |
 |---|---|
 | `/opt/addons/rbvoice/` | venv. `bin/` holds the copied scripts (so `rbvoice.sh` can `source activate`); also `vosk-models/` and `piper-models/` |
-| `/boot/firmware/rb/` | case files, aircraft rules, `db.airfields.json`, `db.frequencies.json` (absent on older images), optional `noise.prof` (create with `CreateNoiseProfile.sh <dir>`). On the RB the web `/settings` folder is a symlink to this folder, so `/settings/db.*.json` on the server is the same data. `assistant.py` hard-codes the rules path. `rbvoice.py` hard-codes the noise-profile, airfields and frequencies paths. |
+| `/boot/firmware/rb/` | case files, aircraft rules, `db.airfields.json`, `db.frequencies.json` (absent on older images), optional `noise.prof` (create with `CreateNoiseProfile.sh <dir>`). On the RB the web `/settings` folder is a symlink to this folder, so `/settings/db.*.json` on the server is the same data. The folder is `rbvoice.py --rb-dir` (default `/boot/firmware/rb`, set by `RBDIR` in `rbvoice.sh`); `rbvoice.py` passes the rules path to `assistant.py` as `CONFIG["rules_path"]`. |
 | `/opt/stratux/www/playback/` | recordings and conversation history (`--rec`) |
 
 `make install` copies the JSON configs only if they are **absent** from `/boot/firmware/rb/`. Editing the JSON in the repo does not update a device that already has them; copy them over by hand.
